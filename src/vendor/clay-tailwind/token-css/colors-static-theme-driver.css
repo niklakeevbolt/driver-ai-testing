@@ -1,0 +1,18 @@
+:where([data-theme="driver"]) {
+  --color-static-content-key-dark: rgba(0, 0, 0, 1.0);
+  --color-static-content-primary-dark: rgba(47, 49, 63, 1.0);
+  --color-static-content-secondary-dark: rgba(18, 29, 43, 0.60);
+  --color-static-content-tertiary-dark: rgba(6, 26, 55, 0.36);
+  --color-static-content-key-light: rgba(255, 255, 255, 1.0);
+  --color-static-content-primary-light: rgba(250, 250, 251, 1.0);
+  --color-static-content-secondary-light: rgba(255, 255, 255, 0.64);
+  --color-static-content-tertiary-light: rgba(255, 255, 255, 0.36);
+  --color-static-bg-key-light: rgba(255, 255, 255, 1.0);
+  --color-static-bg-neutral-secondary-light: rgba(255, 255, 255, 0.12);
+  --color-static-bg-key-dark: rgba(0, 0, 0, 1.0);
+  --color-static-bg-key-secondary-dark: rgba(0, 0, 0, 0.08);
+  --color-static-bg-neutral-primary-dark: rgba(47, 49, 63, 1.0);
+  --color-static-bg-promo-high-contrast: rgba(18, 112, 66, 1.0);
+  --color-static-bg-danger-high-contrast: rgba(201, 29, 43, 1.0);
+  --color-static-bg-active-key-light: rgba(245, 246, 247, 1.0);
+}

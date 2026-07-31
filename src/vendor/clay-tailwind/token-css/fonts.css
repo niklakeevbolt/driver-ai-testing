@@ -1,0 +1,369 @@
+.font-heading-xs-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1.25rem;
+  line-height: 1.5625rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.017em;
+  font-variation-settings: "opsz" 20;
+}
+.font-heading-xs-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1.25rem;
+  line-height: 1.5625rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.017em;
+  font-variation-settings: "opsz" 20;
+}
+.font-heading-s-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1.5rem;
+  line-height: 1.875rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.019em;
+  font-variation-settings: "opsz" 24;
+}
+.font-heading-m-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 28;
+}
+.font-heading-l-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.022em;
+  font-variation-settings: "opsz" 32;
+}
+.font-body-l-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.014em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-l-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.014em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-l-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.014em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-l-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.014em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-m-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.011em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-m-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.011em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-m-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.011em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-m-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.011em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-s-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.006em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-s-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.006em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-s-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.006em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-s-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.006em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-xs-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-xs-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-xs-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.75rem;
+  line-height: 0.9375rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-xs-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.75rem;
+  line-height: 0.9375rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-l-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.029em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-tabular-l-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.029em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-tabular-l-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.029em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-tabular-l-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.029em;
+  font-variation-settings: "opsz" 18;
+}
+.font-body-tabular-m-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.026em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-tabular-m-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.026em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-tabular-m-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.026em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-tabular-m-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.026em;
+  font-variation-settings: "opsz" 16;
+}
+.font-body-tabular-s-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.021em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-s-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.021em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-s-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.021em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-s-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.021em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-xs-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.015em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-xs-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.015em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-xs-compact-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 0.75rem;
+  line-height: 0.9375rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.015em;
+  font-variation-settings: "opsz" 14;
+}
+.font-body-tabular-xs-compact-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.75rem;
+  line-height: 0.9375rem;
+  font-feature-settings: "tnum", "cv03", "cv04";
+  letter-spacing: -0.015em;
+  font-variation-settings: "opsz" 14;
+}
+.font-caps-l-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: 0.069em;
+  font-variation-settings: "opsz" 16;
+}
+.font-caps-m-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: 0.074em;
+  font-variation-settings: "opsz" 14;
+}
+.font-caps-s-accent {
+  font-family: InterVariable, sans-serif;
+  font-weight: 650;
+  font-size: 0.6875rem;
+  line-height: 0.875rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: 0.08em;
+  font-variation-settings: "opsz" 14;
+}
+.font-display-m-regular {
+  font-family: InterVariable, sans-serif;
+  font-weight: 450;
+  font-size: 3rem;
+  line-height: 3.75rem;
+  font-feature-settings: "cv03", "cv04";
+  letter-spacing: -0.022em;
+  font-variation-settings: "opsz" 32;
+}

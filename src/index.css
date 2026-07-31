@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@import "./vendor/clay-tailwind/index.css";
+@import "./vendor/clay-tailwind/token-css/colors-light-theme-driver.css";
+@import "./vendor/clay-tailwind/token-css/colors-dark-theme-driver.css";
+@import "./vendor/clay-tailwind/token-css/colors-static-theme-driver.css";
+@source "../**/*.{js,jsx}";
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    font-family:
+      var(--font-sans, InterVariable, ui-sans-serif, "Helvetica Neue", Arial, sans-serif);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--color-layer-floor-0-grouped, #f0f2f5);
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+  }
+
+  input,
+  textarea {
+    font-family: inherit;
+  }
+}

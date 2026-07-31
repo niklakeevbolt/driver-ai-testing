@@ -1,0 +1,14 @@
+import * as React from "react";
+const sizes = {
+    xs: 16,
+    sm: 20,
+    md: 20,
+    lg: 24,
+    xl: 36,
+};
+function SvgUserOutlined(props) {
+    return (React.createElement("svg", Object.assign({ width: sizes[props.size || "lg"], height: sizes[props.size || "lg"], viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, props),
+        React.createElement("path", { fillRule: "evenodd", clipRule: "evenodd", d: "M11.9999 2C9.51466 2 7.49994 4.01472 7.49994 6.5C7.49994 8.98528 9.51466 11 11.9999 11C14.4852 11 16.4999 8.98528 16.4999 6.5C16.4999 4.01472 14.4852 2 11.9999 2ZM14.4999 6.5C14.4999 7.88071 13.3807 9 11.9999 9C10.6192 9 9.49994 7.88071 9.49994 6.5C9.49994 5.11929 10.6192 4 11.9999 4C13.3807 4 14.4999 5.11929 14.4999 6.5Z", fill: "currentColor" }),
+        React.createElement("path", { fillRule: "evenodd", clipRule: "evenodd", d: "M12.0009 12.5C9.734 12.4998 7.39493 12.8241 4.98606 13.4613C4.1099 13.693 3.49969 14.4829 3.49976 15.3851L3.5002 20.0097C3.50045 21.1084 4.39696 21.9998 5.50092 22C6.73535 21.999 14.7123 21.9995 18.5039 21.9998C19.6086 21.9999 20.5001 21.1044 20.5001 19.9997L20.4999 15.3851C20.4998 14.483 19.8897 13.6933 19.0136 13.4616C16.6059 12.8247 14.2675 12.5002 12.0009 12.5ZM18.5001 20.015L18.4999 15.3852C16.24 14.7874 14.0747 14.4907 12.0007 14.4904C9.92663 14.4903 7.76075 14.7869 5.49976 15.3849L5.50109 20.0203L18.5001 20.015Z", fill: "currentColor" })));
+}
+export default SvgUserOutlined;

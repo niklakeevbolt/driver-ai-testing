@@ -1,0 +1,42 @@
+{
+  "name": "@bolteu/clay-tailwind",
+  "version": "1.1.0",
+  "description": "Clay Design System Tailwind CSS Configuration",
+  "homepage": "https://github.com/bolteu/kalep/tree/main/packages/clay-tailwind",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/bolteu/kalep.git"
+  },
+  "type": "module",
+  "main": "index.css",
+  "exports": {
+    ".": "./index.css",
+    "./full": "./index-full.css",
+    "./token-css/*": "./token-css/*",
+    "./themes/*": "./themes/*"
+  },
+  "files": [
+    "index.css",
+    "index-full.css",
+    "plugin",
+    "token-css",
+    "themes",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "license": "UNLICENSED",
+  "peerDependencies": {
+    "tailwindcss": ">=4.2.4"
+  },
+  "dependencies": {
+    "@bolteu/design-tokens": "2.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.2.4",
+    "tailwindcss": "4.2.4"
+  },
+  "scripts": {
+    "build": "node scripts/generate-full.ts",
+    "generate:full": "node scripts/generate-full.ts"
+  }
+}

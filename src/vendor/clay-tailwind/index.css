@@ -1,0 +1,176 @@
+/* Clay Design System — Tailwind CSS v4 Theme Configuration */
+
+/* ============================================================
+   Token CSS Imports — Semantic only (light + dark)
+   ============================================================ */
+@import "./token-css/variables.css";
+@import "./token-css/colors-light.css";
+@import "./token-css/colors-dark.css";
+
+/* ============================================================
+   Optional imports — add them in your project's CSS as needed.
+
+   Map colors:
+     @import "@bolteu/clay-tailwind/token-css/colors-map-light.css";
+     @import "@bolteu/clay-tailwind/token-css/colors-map-dark.css";
+
+   Ember theme:
+     @import "@bolteu/clay-tailwind/token-css/colors-light-theme-ember.css";
+     @import "@bolteu/clay-tailwind/token-css/colors-dark-theme-ember.css";
+
+   Driver theme:
+     @import "@bolteu/clay-tailwind/token-css/colors-light-theme-driver.css";
+     @import "@bolteu/clay-tailwind/token-css/colors-dark-theme-driver.css";
+     @import "@bolteu/clay-tailwind/token-css/colors-static-theme-driver.css";
+
+   See README.md for full setup instructions.
+   ============================================================ */
+
+/* ============================================================
+   Theme
+   ============================================================ */
+@theme {
+    /* Disable default TW4 palette — clay uses only design token semantic colors */
+    --color-*: initial;
+
+    /* --- Font Families --- */
+    --font-sans:
+        InterVariable, ui-sans-serif, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-sans--font-feature-settings: "cv03", "cv04";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+
+    /* --- Font Weights --- */
+    --font-weight-normal: 450;
+    --font-weight-semibold: 650;
+
+    /* --- Border Radius ---
+       Values match kalep-tailwind's TW3 borderRadius config exactly.
+       Components keep TW3 class names (Option F), so:
+         .rounded-sm → --radius-sm → 0.25rem
+         .rounded    → --radius    → 0.5rem (DEFAULT)
+         .rounded-md → --radius-md → 0.5rem                  */
+    --radius-none: 0px;
+    --radius-sm: 0.25rem;
+    --radius: 0.5rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* --- Box Shadows ---
+       Values match kalep-tailwind's TW3 boxShadow config exactly.
+       Components keep TW3 class names (Option F), so:
+         .shadow → --shadow → kalep DEFAULT value
+       Note: kalep-tailwind has no shadow-sm, only DEFAULT/md/lg/xl/inner/none. */
+    --shadow:
+        0px 0px 1px 1px rgba(26, 27, 35, 0.04), 0px 2px 2px rgba(26, 27, 35, 0.06),
+        0px 2px 2px -2px rgba(26, 27, 35, 0.24);
+    --shadow-md:
+        0px 0px 1px 1px rgba(26, 27, 35, 0.04), 0px 8px 8px rgba(26, 27, 35, 0.06),
+        0px 8px 8px -8px rgba(26, 27, 35, 0.24);
+    --shadow-lg:
+        0px 0px 1px 1px rgba(26, 27, 35, 0.04), 0px 16px 16px rgba(26, 27, 35, 0.06),
+        0px 16px 16px -16px rgba(26, 27, 35, 0.24);
+    --shadow-xl:
+        0px 0px 1px 1px rgba(26, 27, 35, 0.04), 0px 32px 32px rgba(26, 27, 35, 0.12),
+        0px 32px 32px -32px rgba(26, 27, 35, 0.4);
+    --shadow-inner: inset 0px 0px 1px 1px rgba(26, 27, 35, 0.04), inset 0px 4px 4px -2px rgba(26, 27, 35, 0.06);
+
+    /* --- Custom Spacing (extends TW4's default --spacing: 0.25rem scale) --- */
+    --spacing-comp-vr-padding-s: 0.5rem;
+    --spacing-comp-vr-padding-m: 0.5rem;
+    --spacing-comp-vr-padding-l: 0.75rem;
+
+    /* --- Animations ---
+       Registers the indeterminate ProgressBar sweep as the Tailwind v4
+       utility `animate-indeterminate-progress`. Consumed by
+       `@bolteu/clay-react`'s `ProgressBar.Indicator` when `value === null`.
+       The keyframes mirror the legacy kalep-react behaviour (60%-wide bar
+       shuttling across the track) but use `transform: translateX` instead
+       of `left` so the animation is GPU-composited. */
+    --animate-indeterminate-progress: indeterminate-progress 2s linear infinite;
+}
+
+@keyframes indeterminate-progress {
+    0% {
+        transform: translateX(-100%);
+    }
+    60% {
+        transform: translateX(166.6667%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* ============================================================
+   Base Styles — global HTML resets and defaults
+   ============================================================ */
+html {
+    color: var(--color-content-primary);
+}
+
+:where([data-mode="light"], [data-mode="light"] ::backdrop) {
+    color-scheme: light;
+}
+
+:where([data-mode="dark"], [data-mode="dark"] ::backdrop) {
+    color-scheme: dark;
+}
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+svg[data-rtl-mirror]:dir(rtl) {
+    transform: scaleX(-1);
+}
+
+/* ============================================================
+   Plugins — auto-discover design tokens and generate utilities
+   ============================================================ */
+@plugin "./plugin/colors.js";
+@plugin "./plugin/fonts.js";
+
+/* ============================================================
+   Small Static Utilities
+   ============================================================ */
+
+/* Icon sizes (extend.size from kalep-tailwind — applies width + height) */
+@utility size-icon-xs {
+    width: 1rem;
+    height: 1rem;
+}
+@utility size-icon-s {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+@utility size-icon-m {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Component min-heights (extend.minHeight comp-* from kalep-tailwind) */
+@utility min-h-comp-s {
+    min-height: 2.25rem;
+}
+@utility min-h-comp-m {
+    min-height: 3rem;
+}
+@utility min-h-comp-l {
+    min-height: 3.5rem;
+}
+
+/* ============================================================
+   Custom Variants
+   ============================================================ */
+@custom-variant input-clear-button (&::-webkit-search-cancel-button);
+@custom-variant slider-thumb (&::-webkit-slider-thumb, &::-moz-range-thumb, &::-ms-thumb);
+@custom-variant slider-track (
+    &::-webkit-slider-runnable-track,
+    &::-moz-range-track,
+    &::-ms-track
+);

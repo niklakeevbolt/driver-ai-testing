@@ -1,0 +1,29 @@
+:where([data-mode="dark"]) {
+  --color-map-zone-positive-bg-primary: rgba(43, 134, 89, 1);
+  --color-map-zone-positive-bg-secondary: rgba(0, 255, 110, 0.12);
+  --color-map-zone-positive-border-primary: rgba(43, 134, 89, 1);
+  --color-map-zone-danger-bg-primary: rgba(222, 25, 41, 1);
+  --color-map-zone-danger-bg-secondary: rgba(253, 0, 0, 0.3);
+  --color-map-zone-danger-border-primary: rgba(222, 25, 41, 1);
+  --color-map-zone-neutral-bg-primary: rgba(173, 181, 178, 1);
+  --color-map-zone-neutral-bg-secondary: rgba(244, 246, 233, 0.08);
+  --color-map-zone-neutral-border-primary: rgba(244, 254, 249, 0.69);
+  --color-map-special-key: rgba(0, 0, 0, 1.0);
+  --color-map-special-key-inverted: rgba(255, 255, 255, 1.0);
+  --color-map-marker-neutral-bg-primary: rgba(255, 255, 255, 1.0);
+  --color-map-marker-neutral-content-primary: rgba(25, 31, 28, 1);
+  --color-map-marker-neutral-content-secondary: rgba(0, 10, 7, 0.63);
+  --color-map-marker-selected-bg-primary: rgba(221, 255, 233, 1);
+  --color-map-marker-selected-content-primary: rgba(25, 31, 28, 1);
+  --color-map-marker-selected-content-secondary: rgba(0, 10, 7, 0.63);
+  --color-map-journey-path-default-border-primary: rgba(236, 238, 237, 1);
+  --color-map-journey-path-driving-border-primary: rgba(224, 235, 255, 1);
+  --color-map-journey-path-walking-border-primary: rgba(236, 238, 237, 1);
+  --color-map-journey-path-inbound-border-primary: rgba(99, 112, 107, 1);
+  --color-map-journey-points-start-bg-primary: rgba(116, 239, 170, 1);
+  --color-map-journey-points-start-content-primary: rgba(116, 239, 170, 1);
+  --color-map-journey-points-end-bg-primary: rgba(221, 255, 233, 1);
+  --color-map-journey-points-end-content-primary: rgba(221, 255, 233, 1);
+  --color-map-user-location-accuracy-circle-bg-primary: rgba(64, 81, 252, 0.26);
+  --color-map-user-location-marker-content-primary: rgba(89, 102, 243, 1);
+}

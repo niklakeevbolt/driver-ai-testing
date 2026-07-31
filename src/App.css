@@ -1,0 +1,694 @@
+/* ─── Design Tokens (exact Figma values) ─────────────────────── */
+:root {
+  /* Content */
+  --content-primary: #191f1c;
+  --content-primary-light: #2a313c;
+  --content-secondary: rgba(0,10,7,0.63);
+  --content-secondary-solid: #7f8c9f;
+  --content-green: rgba(0,112,66,0.92);
+
+  /* Surfaces */
+  --surface-floor1: #ffffff;
+  --surface-floor2: #ffffff;
+  --surface-grouped: #eef1f0;
+  --neutral-secondary: rgba(0,45,30,0.07);
+  --border-separator: rgba(0,45,30,0.07);
+
+  /* Brand / Action */
+  --green: #32bb78;
+  --green-dark: #1db870;
+
+  /* Rewards */
+  --silver-bg: #e8eef3;
+  --silver-primary: #8aa1b1;
+  --silver-progress-track: rgba(73,93,122,0.16);
+
+  /* Status */
+  --danger: #ce0019;
+  --warning: #f58300;
+  --warning-secondary: #9e5b00;
+  --inactive: #a5b0c0;
+
+  /* Map */
+  --map-bg: #e9eaee;
+
+  /* Elevations */
+  --elevation-1: 0px 2px 6px 0px rgba(0,0,0,0.16);
+  --elevation-2: 0px 4px 12px 0px rgba(0,0,0,0.2);
+  --sheet-shadow: 0px -4px 12px 0px rgba(0,0,0,0.15);
+  --tab-shadow: 0 6px 24px rgba(0,0,0,0.24);
+
+  /* Typography: Clay font stack */
+  --font: var(--font-sans, InterVariable, ui-sans-serif, "Helvetica Neue", Arial, sans-serif);
+  --ffs: 'cv03' 1, 'cv04' 1, 'lnum' 1, 'pnum' 1;
+
+  /* Radii */
+  --radius-full: 9600px;
+}
+
+/* ─── Phone Shell ────────────────────────────────────────────── */
+.phone-shell {
+  position: relative;
+  width: 393px;
+  height: 852px;
+  background: #111;
+  border-radius: 54px;
+  padding: 12px;
+  box-shadow:
+    0 0 0 2px #2a2a2a,
+    0 60px 120px rgba(0,0,0,0.7),
+    0 20px 40px rgba(0,0,0,0.4),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+/* Side buttons */
+.phone-shell::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 120px;
+  width: 4px;
+  height: 36px;
+  background: #2a2a2a;
+  border-radius: 2px 0 0 2px;
+  box-shadow: 0 52px 0 #2a2a2a, 0 104px 0 #2a2a2a;
+}
+.phone-shell::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 160px;
+  width: 4px;
+  height: 64px;
+  background: #2a2a2a;
+  border-radius: 0 2px 2px 0;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Dynamic Island */
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 200;
+}
+
+/* Status Bar */
+.status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
+  z-index: 150;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  pointer-events: none;
+}
+.status-bar .time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  font-family: var(--font);
+}
+.status-bar .status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-bar.light .time,
+.status-bar.light .status-icons { color: var(--content-primary); }
+.status-bar.dark .time,
+.status-bar.dark .status-icons { color: #fff; }
+
+/* Home indicator */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  border-radius: 3px;
+  z-index: 200;
+  pointer-events: none;
+}
+.home-indicator.light { background: rgba(0,0,0,0.2); }
+.home-indicator.dark { background: rgba(255,255,255,0.3); }
+
+/* ─── Screen Base ────────────────────────────────────────────── */
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+}
+
+/* ─── Map Background ─────────────────────────────────────────── */
+.map-bg {
+  position: absolute;
+  inset: 0;
+  background-color: #e9eaee;
+  overflow: hidden;
+}
+
+/* ─── FABs ───────────────────────────────────────────────────── */
+/* Exact Figma: 48×48, border-radius 100px, shadow Elevation 2 */
+.fab {
+  width: 48px;
+  height: 48px;
+  border-radius: 100px;
+  background: var(--surface-floor2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--elevation-2);
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.12s;
+}
+.fab:active { transform: scale(0.94); }
+.fab.dark { background: rgba(0,0,0,0.85); color: #fff; }
+/* Profile avatar FAB: inner white ring separates photo from map */
+.fab-profile {
+  box-shadow: var(--elevation-2);
+}
+.fab-profile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 3px #fff;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.fab-badge {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 16px; height: 16px;
+  background: #ef4444;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #fff;
+}
+
+/* Earnings Island: 113×48, border-radius 28px */
+.earnings-island {
+  height: 48px;
+  width: 113px;
+  padding: 6px 16px 7px;
+  border-radius: 28px;
+  background: var(--surface-floor2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--elevation-2);
+  transition: transform 0.12s;
+}
+.earnings-island:active { transform: scale(0.96); }
+.earnings-island .ei-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--content-primary);
+  letter-spacing: -0.34px;
+  line-height: 25px;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+}
+
+/* ─── Page Header / Navigation ───────────────────────────────── */
+/* Status bar 44px + top section 56px = 100px total */
+.page-header {
+  background: var(--surface-floor1);
+  flex-shrink: 0;
+}
+.page-header-inner {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 8px;
+  min-height: 56px;
+}
+.page-title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--content-primary);
+  letter-spacing: -0.252px;
+  line-height: 22px;
+}
+.page-title-large {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--content-primary);
+  letter-spacing: -0.616px;
+  line-height: 36px;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+}
+.back-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--content-primary);
+  flex-shrink: 0;
+}
+
+/* ─── Bottom Sheet ───────────────────────────────────────────── */
+/* Exact Figma: rounded-[24px], shadow 0px -4px 12px rgba(0,0,0,0.15), pt-32px pb-24px px-24px, gap-16px */
+.bottom-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface-floor1);
+  border-radius: 24px 24px 0 0;
+  box-shadow: var(--sheet-shadow);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 32px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bottom-sheet::-webkit-scrollbar { display: none; }
+
+/* Drag handle: bg-black opacity-10, h-6, w-60, rounded-[10px], top-10 */
+.drag-handle {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 6px;
+  background: rgba(0,0,0,0.10);
+  border-radius: 10px;
+}
+
+/* ─── Route / Rider Cards ────────────────────────────────────── */
+/* bg-[#eef1f0], rounded-[12px], p-[12px], gap-[8px] */
+.route-card {
+  background: var(--surface-grouped);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.rider-card {
+  background: var(--surface-grouped);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Break items: split top/bottom rounded */
+.break-item-top {
+  background: var(--surface-grouped);
+  border-radius: 12px 12px 0 0;
+  padding: 12px;
+}
+.break-item-bottom {
+  background: var(--surface-grouped);
+  border-radius: 0 0 12px 12px;
+  padding: 12px;
+}
+.break-separator {
+  height: 1px;
+  background: #e1dede;
+}
+
+/* Icon view: 28×28, rounded-full, bg neutral-secondary */
+.icon-view {
+  width: 28px;
+  height: 28px;
+  border-radius: 100px;
+  background: var(--neutral-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.icon-view-lg {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  background: var(--neutral-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ─── Metric Tiles (Sidebar) ─────────────────────────────────── */
+/* bg neutral-secondary, rounded-[16px], px-[12px] py-[8px] */
+.metric-tile {
+  background: var(--neutral-secondary);
+  border-radius: 16px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.metric-value {
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--content-primary-light);
+  letter-spacing: -0.704px;
+  line-height: 40px;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+}
+.metric-label {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--content-primary);
+  letter-spacing: -0.176px;
+  line-height: 24px;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+}
+
+/* ─── Silver Card ────────────────────────────────────────────── */
+.silver-card {
+  background: var(--silver-bg);
+  border-radius: 16px;
+  height: 116px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── Progress Bar ───────────────────────────────────────────── */
+.progress-track {
+  height: 8px;
+  background: var(--silver-progress-track);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--silver-primary);
+  border-radius: 10px;
+}
+
+/* ─── Benefit / Settings Rows ────────────────────────────────── */
+/* h-[60px], bg neutral-secondary, rounded-[16px] */
+.list-row {
+  height: 60px;
+  background: var(--neutral-secondary);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* ─── Safety Tiles ───────────────────────────────────────────── */
+/* h-143, w-330, bg surface-grouped, rounded-16 */
+.safety-tile {
+  position: absolute;
+  height: 143px;
+  width: 330px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-grouped);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: opacity 0.1s;
+}
+.safety-tile:active { opacity: 0.85; }
+
+/* ─── Tab Bar ────────────────────────────────────────────────── */
+/* h-77px, shadow 0 6px 24px rgba(0,0,0,0.24) */
+.tab-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 77px;
+  background: var(--surface-floor1);
+  box-shadow: var(--tab-shadow);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 8px;
+  flex-shrink: 0;
+  z-index: 20;
+}
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding-top: 4px;
+  color: var(--content-secondary-solid);
+  font-family: var(--font);
+}
+.tab-bar-item.active { color: var(--green-dark); }
+.tab-bar-item span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* ─── Filter Chips ───────────────────────────────────────────── */
+/* h-32px, rounded-[8px], px-[8px] py-[6px] */
+.filter-chip {
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.filter-chip.active {
+  background: var(--content-primary-light);
+  color: #fff;
+}
+.filter-chip.inactive {
+  background: var(--neutral-secondary);
+  color: var(--content-primary);
+}
+
+/* ─── Chat ───────────────────────────────────────────────────── */
+.chat-bubble {
+  max-width: 200px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: var(--font);
+}
+.chat-bubble.driver { background: #000; color: #fff; border-bottom-right-radius: 4px; }
+.chat-bubble.rider  { background: var(--surface-grouped); color: var(--content-primary); border-bottom-left-radius: 4px; }
+
+.quick-reply {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 16px;
+  background: var(--neutral-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--content-primary);
+  border: none;
+  white-space: nowrap;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────── */
+.btn-primary {
+  border-radius: 100px;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.48px;
+  line-height: 30px;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+  transition: transform 0.12s, opacity 0.12s;
+  cursor: pointer;
+}
+.btn-primary:active { transform: scale(0.98); }
+.btn-dark { background: #000; color: #fff; }
+.btn-green { background: var(--green); color: #fff; }
+
+/* ─── Sticky Footer ──────────────────────────────────────────── */
+.sticky-footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+  background: var(--surface-floor1);
+}
+
+/* ─── Section Header ─────────────────────────────────────────── */
+.section-label {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--content-primary-light);
+  letter-spacing: -0.616px;
+  line-height: 36px;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+}
+
+/* ─── Dividers ───────────────────────────────────────────────── */
+.divider      { height: 1px; background: var(--border-separator); margin: 0 24px; }
+.divider-full { height: 1px; background: var(--border-separator); }
+
+/* ─── Notif Item ─────────────────────────────────────────────── */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 20px;
+  gap: 12px;
+  cursor: pointer;
+}
+.notif-dot {
+  width: 8px; height: 8px;
+  border-radius: 4px;
+  background: var(--green);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+/* ─── Scroll Content ─────────────────────────────────────────── */
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.scroll-content::-webkit-scrollbar { display: none; }
+.hide-scroll::-webkit-scrollbar { display: none; }
+
+/* ─── List items ─────────────────────────────────────────────── */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  gap: 14px;
+  cursor: pointer;
+}
+.list-item-content { flex: 1; min-width: 0; }
+.list-item-title {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--content-primary);
+  letter-spacing: -0.252px;
+  line-height: 24px;
+  font-family: var(--font);
+  font-feature-settings: var(--ffs);
+}
+.list-item-sub {
+  font-size: 14px;
+  color: var(--content-secondary);
+  margin-top: 1px;
+  font-family: var(--font);
+}
+
+/* ─── Demand Chart ───────────────────────────────────────────── */
+.demand-chart-wrap {
+  position: relative;
+  height: 72px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 2px;
+}
+.demand-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  min-height: 3px;
+}
+
+/* ─── Week Chart ─────────────────────────────────────────────── */
+.week-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 90px;
+  padding: 0 4px;
+}
+.week-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+.week-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: rgba(73,93,122,0.16);
+  min-height: 4px;
+}
+.week-bar.past { background: var(--inactive); }
+.week-bar.today { background: var(--green); }
+.week-day {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--content-secondary-solid);
+  margin-top: 4px;
+  font-family: var(--font);
+}
+.week-day.today { color: var(--green-dark); }
+
+/* ─── Avatar ─────────────────────────────────────────────────── */
+.avatar {
+  border-radius: 50%;
+  background: var(--neutral-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--content-secondary-solid);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.avatar-sm { width: 28px; height: 28px; font-size: 11px; }
+.avatar-md { width: 40px; height: 40px; font-size: 15px; }
+
+/* ─── Surge zone blur (Leaflet) ──────────────────────────────── */
+.leaflet-overlay-pane svg { overflow: visible; }
+.surge-blur { filter: blur(26px); transition: fill-opacity 0.32s ease-out; }

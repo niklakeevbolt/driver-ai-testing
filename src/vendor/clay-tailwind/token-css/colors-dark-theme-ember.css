@@ -1,0 +1,13 @@
+:where([data-mode="dark"][data-theme="ember"], [data-mode="dark"][data-theme="ember"] ::backdrop) {
+  --color-content-action-primary: rgba(255, 191, 53, 1);
+  --color-content-action-secondary: rgba(255, 191, 53, 1);
+  --color-content-action-primary-inverted: rgba(158, 91, 0, 1);
+  --color-bg-action-primary: rgba(141, 102, 33, 1);
+  --color-bg-action-secondary: rgba(255, 133, 0, 0.14);
+  --color-bg-active-action-primary: rgba(111, 80, 24, 1);
+  --color-bg-active-action-secondary: rgba(254, 138, 0, 0.26);
+  --color-border-action-primary: rgba(141, 102, 33, 1);
+  --color-border-action-secondary: rgba(254, 160, 0, 0.32);
+  --color-border-active-action-primary: rgba(111, 80, 24, 1);
+  --color-content-active-action-primary-inverted: rgba(63, 45, 15, 1);
+}
