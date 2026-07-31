@@ -155,7 +155,7 @@ function DeviceSelect({
   setDeviceSizeIdx,
 }) {
   const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef(null);
   const current = DEVICE_SIZES[deviceSizeIdx] ?? DEVICE_SIZES[3]
 
   useEffect(() => {
