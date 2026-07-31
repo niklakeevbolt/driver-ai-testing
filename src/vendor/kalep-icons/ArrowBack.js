@@ -6,8 +6,8 @@ const sizes = {
     lg: 24,
     xl: 36,
 };
-function SvgArrowBack(props) {
-    return (React.createElement("svg", Object.assign({ width: sizes[props.size || "lg"], height: sizes[props.size || "lg"], viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", "data-rtl-mirror": true }, props),
+function SvgArrowBack({ size, ref, ...props }) {
+    return (React.createElement("svg", { width: sizes[size || "lg"], height: sizes[size || "lg"], viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", "data-rtl-mirror": true, ...props },
         React.createElement("path", { d: "M7.83143 2.70628C8.22218 2.31594 8.22218 1.68309 7.83143 1.29275C7.44068 0.902416 6.80715 0.902416 6.41641 1.29275L3.58636 4.11981C2.80487 4.90048 2.80487 6.1662 3.58636 6.94687L6.41641 9.77392C6.80715 10.1643 7.44068 10.1643 7.83143 9.77392C8.22218 9.38359 8.22218 8.75073 7.83143 8.36039L5.96608 6.49702C5.97459 6.49723 5.98312 6.49734 5.99168 6.49734H12.7038C16.1895 6.49734 18.9991 9.27748 18.9991 12.7313C18.9991 16.1915 16.1831 19.001 12.7038 19.001H4.99111C4.43851 19.001 3.99054 19.4485 3.99054 20.0005C3.99054 20.5525 4.43851 21 4.99111 21H12.7038C17.2834 21 21.0002 17.3004 21.0002 12.7313C21.0002 8.15574 17.2769 4.49831 12.7038 4.49831H6.03751L7.83143 2.70628Z", fill: "currentColor" })));
 }
 export default SvgArrowBack;
