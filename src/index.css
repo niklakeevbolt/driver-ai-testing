@@ -3,7 +3,7 @@
 @import "./vendor/clay-tailwind/token-css/colors-light-theme-driver.css";
 @import "./vendor/clay-tailwind/token-css/colors-dark-theme-driver.css";
 @import "./vendor/clay-tailwind/token-css/colors-static-theme-driver.css";
-@source "../**/*.{js,jsx}";
+@source "./**/*.{js,jsx}";
 
 @layer base {
   *,
