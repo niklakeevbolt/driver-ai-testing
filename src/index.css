@@ -26,11 +26,16 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: var(--color-layer-floor-0-grouped, #f0f2f5);
+    /* Suppress pull-to-refresh and rubber-banding so the fullscreen mobile
+       layout behaves like an app rather than a page. */
+    overscroll-behavior: none;
   }
 
   #root {
     width: 100%;
-    min-height: 100vh;
+    /* dvh, not vh: vh ignores mobile browser chrome and would leave the page
+       scrollable by the height of the address bar. */
+    min-height: 100dvh;
   }
 
   button {

@@ -27,14 +27,20 @@ const DARK_SCREENS = new Set(['navigation'])
 const SIDEBAR_ORIGIN = '56px 68px'
 const HUB_ORIGIN = '335px 68px'
 
+/**
+ * The device frame and dev sidebar are authoring tools, so they need a mouse as
+ * well as room. Requiring a fine pointer keeps tablets on the fullscreen app
+ * even though they are wider than the breakpoint.
+ */
+const DESKTOP_QUERY = '(min-width: 768px) and (pointer: fine)'
+
 export default function App() {
   const { darkMode, rtl } = useDeviceFrame()
   const [screen, setScreen] = useState('home')
   const [, setHistory] = useState([])
   const [scenario, setScenario] = useState('tasks')
   const [menuOpen, setMenuOpen] = useState(false)
-  const [debugPanelOpen, setDebugPanelOpen] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 768)
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_QUERY).matches)
 
   const hasTasks = scenario === 'tasks'
   const hasSupportMsg = scenario === 'support'
@@ -43,9 +49,10 @@ export default function App() {
   const hubBadge = updatesBadge + helpBadge
 
   useEffect(() => {
-    const handler = () => setIsDesktop(window.innerWidth >= 768)
-    window.addEventListener('resize', handler)
-    return () => window.removeEventListener('resize', handler)
+    const query = window.matchMedia(DESKTOP_QUERY)
+    const handler = (event) => setIsDesktop(event.matches)
+    query.addEventListener('change', handler)
+    return () => query.removeEventListener('change', handler)
   }, [])
 
   useEffect(() => {
@@ -218,99 +225,43 @@ export default function App() {
     onScenarioChange: setScenario,
   }
 
-  const mobileDebugMenu = !isDesktop ? (
-    <>
-      <button
-        type="button"
-        onClick={() => setDebugPanelOpen(true)}
-        style={{
-          position: 'fixed',
-          bottom: 12,
-          right: 12,
-          zIndex: 200,
-          width: 32,
-          height: 32,
-          borderRadius: '50%',
-          background: 'var(--color-special-scrim, rgba(0,0,0,0.5))',
-          border: 'none',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
-          <rect width="14" height="2" rx="1" fill="var(--color-content-primary-inverted, #fff)" />
-          <rect y="5" width="14" height="2" rx="1" fill="var(--color-content-primary-inverted, #fff)" />
-          <rect y="10" width="14" height="2" rx="1" fill="var(--color-content-primary-inverted, #fff)" />
-        </svg>
-      </button>
-      {debugPanelOpen ? (
-        <div
-          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'var(--color-special-scrim, rgba(0,0,0,0.5))' }}
-          onClick={() => setDebugPanelOpen(false)}
-        >
-          <div style={{ padding: 16 }} onClick={(event) => event.stopPropagation()}>
-            <DevSidebar
-              {...sidebarProps}
-              onClose={() => setDebugPanelOpen(false)}
-            />
-          </div>
-        </div>
-      ) : null}
-    </>
-  ) : null
-
   const fullscreen = new URLSearchParams(window.location.search).has('fullscreen')
 
-  if (fullscreen) {
+  if (fullscreen || !isDesktop) {
     return (
-      <div ref={phoneRef} style={{ width: '100vw', height: '100vh', overflow: 'hidden', position: 'relative' }}>
+      <div
+        className="app-fullscreen"
+        ref={phoneRef}
+        dir={rtl ? 'rtl' : 'ltr'}
+        data-mode={darkMode ? 'dark' : 'light'}
+      >
         {phoneContent}
       </div>
     )
   }
 
-  if (isDesktop) {
-    return (
-      <div style={{ height: '100vh', width: '100%', background: 'var(--color-layer-floor-0-grouped, #f0f2f5)', display: 'flex' }}>
-        <DevSidebar {...sidebarProps} />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <TopBar />
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'auto', padding: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24 }}>
-              <PhoneFrame>
-                <div
-                  className="phone-screen-inner"
-                  ref={phoneRef}
-                  dir={rtl ? 'rtl' : 'ltr'}
-                  data-mode={darkMode ? 'dark' : 'light'}
-                  style={{ width: '100%', height: '100%', position: 'relative' }}
-                >
-                  {phoneContent}
-                </div>
-              </PhoneFrame>
-              <InspectPanel />
-            </div>
+  return (
+    <div style={{ height: '100vh', width: '100%', background: 'var(--color-layer-floor-0-grouped, #f0f2f5)', display: 'flex' }}>
+      <DevSidebar {...sidebarProps} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <TopBar />
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'auto', padding: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24 }}>
+            <PhoneFrame>
+              <div
+                className="phone-screen-inner"
+                ref={phoneRef}
+                dir={rtl ? 'rtl' : 'ltr'}
+                data-mode={darkMode ? 'dark' : 'light'}
+                style={{ width: '100%', height: '100%', position: 'relative' }}
+              >
+                {phoneContent}
+              </div>
+            </PhoneFrame>
+            <InspectPanel />
           </div>
         </div>
       </div>
-    )
-  }
-
-  return (
-    <div className="relative w-full" style={{ height: '100dvh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <div className="phone-shell">
-        <div
-          className="phone-screen"
-          ref={phoneRef}
-          dir={rtl ? 'rtl' : 'ltr'}
-          data-mode={darkMode ? 'dark' : 'light'}
-        >
-          {phoneContent}
-        </div>
-      </div>
-      {mobileDebugMenu}
     </div>
   )
 }

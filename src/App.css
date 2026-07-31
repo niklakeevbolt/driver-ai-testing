@@ -151,6 +151,21 @@
 .home-indicator.light { background: rgba(0,0,0,0.2); }
 .home-indicator.dark { background: rgba(255,255,255,0.3); }
 
+/* ─── Fullscreen Layout ──────────────────────────────────────── */
+/* Used on touch devices and ?fullscreen: the real device supplies the bezel,
+   status bar, and home indicator, so we draw none of them. */
+.app-fullscreen {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
+}
+
+.app-fullscreen .home-indicator {
+  display: none;
+}
+
 /* ─── Screen Base ────────────────────────────────────────────── */
 .screen {
   position: absolute;
