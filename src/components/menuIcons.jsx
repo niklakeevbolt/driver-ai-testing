@@ -1,10 +1,12 @@
-import CalendarOutlined from '../vendor/kalep-icons/CalendarOutlined.js'
-import CashOutlined from '../vendor/kalep-icons/CashOutlined.js'
-import GiftOutlined from '../vendor/kalep-icons/GiftOutlined.js'
-import LogOut from '../vendor/kalep-icons/LogOut.js'
-import SettingsOutlined from '../vendor/kalep-icons/SettingsOutlined.js'
-import TimeOutlined from '../vendor/kalep-icons/TimeOutlined.js'
-import UserOutlined from '../vendor/kalep-icons/UserOutlined.js'
+import {
+  CalendarOutlined,
+  CashOutlined,
+  GiftOutlined,
+  LogOut,
+  SettingsOutlined,
+  TimeOutlined,
+  UserOutlined,
+} from '@icons'
 
 export const CalendarIcon = CalendarOutlined
 export const CampaignsMenuIcon = GiftOutlined

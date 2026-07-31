@@ -233,13 +233,14 @@ function ZoomWatcher({ onChange }) {
 }
 
 function AnimatedSurgeLayer({ zone, visible, selected, onSelect, small, heatmapActivity }) {
-  const markerRef = useRef(null)
+  const map = useMap()
 
   // Animate pill opacity/scale via direct DOM manipulation so CSS transition plays
   useEffect(() => {
     if (heatmapActivity !== undefined) return
     const raf = requestAnimationFrame(() => {
-      const icon = markerRef.current?._icon
+      const pane = map.getPane('markerPane')
+      const icon = pane?.querySelector(`.spw[data-zone="${zone.id}"]`)?.closest('.leaflet-marker-icon')
       if (!icon) return
       const wrap = icon.querySelector('.spw')
       if (!wrap) return
@@ -248,7 +249,7 @@ function AnimatedSurgeLayer({ zone, visible, selected, onSelect, small, heatmapA
       icon.style.pointerEvents = visible ? '' : 'none'
     })
     return () => cancelAnimationFrame(raf)
-  }, [visible, heatmapActivity])
+  }, [visible, heatmapActivity, map, zone.id])
 
   const fs = small ? 11 : 13
   const padding = small ? '6px 12px 6px 8px' : '8px 16px 8px 12px'
@@ -262,7 +263,7 @@ function AnimatedSurgeLayer({ zone, visible, selected, onSelect, small, heatmapA
   )
   const pillIcon = useMemo(() => L.divIcon({
     className: '',
-    html: `<div class="spw" style="opacity:0;transform:scale(0.82);transition:opacity 0.32s ease-out,transform 0.32s cubic-bezier(0.34,1.08,0.64,1);transform-origin:bottom center;pointer-events:none;"><div style="background:${zone.color};color:#fff;padding:${padding};border-radius:20px;font-family:var(--font-sans);font-size:${fs}px;font-weight:700;letter-spacing:-0.1px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.22);display:flex;align-items:center;gap:5px;cursor:pointer;">${surgeMarkup}${zone.bonus}</div></div>`,
+    html: `<div class="spw" data-zone="${zone.id}" style="opacity:0;transform:scale(0.82);transition:opacity 0.32s ease-out,transform 0.32s cubic-bezier(0.34,1.08,0.64,1);transform-origin:bottom center;pointer-events:none;"><div style="background:${zone.color};color:#fff;padding:${padding};border-radius:20px;font-family:var(--font-sans);font-size:${fs}px;font-weight:700;letter-spacing:-0.1px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.22);display:flex;align-items:center;gap:5px;cursor:pointer;">${surgeMarkup}${zone.bonus}</div></div>`,
     iconSize: null,
     iconAnchor: [anchor, 16],
   }), [zone.color, zone.bonus, padding, fs, surgeMarkup, anchor])
@@ -294,7 +295,6 @@ function AnimatedSurgeLayer({ zone, visible, selected, onSelect, small, heatmapA
         eventHandlers={{ click: (e) => { L.DomEvent.stop(e); if (visible) onSelect() } }}
       />
       <Marker
-        ref={markerRef}
         position={zone.center}
         icon={pillIcon}
         eventHandlers={{ click: (e) => { L.DomEvent.stop(e); if (visible) onSelect() } }}

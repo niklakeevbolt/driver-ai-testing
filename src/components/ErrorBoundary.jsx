@@ -10,6 +10,10 @@ export default class ErrorBoundary extends Component {
     return { error }
   }
 
+  componentDidCatch(error, info) {
+    this.componentStack = info?.componentStack
+  }
+
   render() {
     if (this.state.error) {
       return (
@@ -37,6 +41,7 @@ export default class ErrorBoundary extends Component {
             }}
           >
             {this.state.error?.message || String(this.state.error)}
+            {this.componentStack ? `\n\n${this.componentStack}` : ''}
           </pre>
         </div>
       )

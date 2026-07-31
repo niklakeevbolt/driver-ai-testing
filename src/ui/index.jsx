@@ -1,6 +1,15 @@
 import { createContext, useContext, useState } from 'react'
 
-export function GhostButton({ children, className = '', ...props }) {
+export function GhostButton({
+  children,
+  className = '',
+  ref,
+  size: _size,
+  variant: _variant,
+  shape: _shape,
+  type: _type,
+  ...props
+}) {
   return (
     <button type="button" className={className} {...props}>
       {children}
@@ -8,7 +17,16 @@ export function GhostButton({ children, className = '', ...props }) {
   )
 }
 
-export function IconButton({ icon, className = '', ...props }) {
+export function IconButton({
+  icon,
+  className = '',
+  ref,
+  size: _size,
+  variant: _variant,
+  shape: _shape,
+  type: _type,
+  ...props
+}) {
   return (
     <button type="button" className={`inline-flex items-center justify-center bg-layer-floor-1 ${className}`} {...props}>
       {icon}
@@ -16,7 +34,14 @@ export function IconButton({ icon, className = '', ...props }) {
   )
 }
 
-const IconViewRoot = ({ children, className = '', ...props }) => (
+const IconViewRoot = ({
+  children,
+  className = '',
+  ref,
+  size: _size,
+  variant: _variant,
+  ...props
+}) => (
   <div className={`inline-flex items-center justify-center rounded-full ${className}`} {...props}>
     {children}
   </div>
@@ -112,7 +137,14 @@ const BADGE_STYLES = {
   'action-secondary': 'bg-action-secondary text-action-primary',
 }
 
-function BadgeRoot({ children, className = '', variant = 'action-secondary', size: _size, type: _type }) {
+function BadgeRoot({
+  children,
+  className = '',
+  variant = 'action-secondary',
+  ref,
+  size: _size,
+  type: _type,
+}) {
   return (
     <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 bolt-font-body-xs ${BADGE_STYLES[variant] ?? BADGE_STYLES['action-secondary']} ${className}`}>
       {children}

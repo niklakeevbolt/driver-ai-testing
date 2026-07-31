@@ -1,7 +1,7 @@
 import carTopView from '../assets/illustrations/car-top-view.png'
 import stackOfDocumentsAlert from '../assets/illustrations/stack-of-documents-alert.png'
 
-export function CarTopViewIllustration({ alt = '', className, style, ...props }) {
+export function CarTopViewIllustration({ alt = '', className, style, ref, ...props }) {
   return (
     <img
       src={carTopView}
@@ -20,6 +20,7 @@ export function StackOfDocumentsIllustration({
   status = 'alert',
   className,
   style,
+  ref,
   ...props
 }) {
   const src = status === 'alert' ? stackOfDocumentsAlert : stackOfDocumentsAlert
