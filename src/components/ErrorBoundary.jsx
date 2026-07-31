@@ -28,7 +28,8 @@ export default class ErrorBoundary extends Component {
         >
           <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Something went wrong</h1>
           <p style={{ marginBottom: 16, lineHeight: 1.5 }}>
-            The prototype failed to load. Try a hard refresh, or open the browser console for details.
+            The prototype failed to load. This often means your browser cached an older JavaScript bundle.
+            Hard-refresh this page (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows) or open it in a private window.
           </p>
           <pre
             style={{

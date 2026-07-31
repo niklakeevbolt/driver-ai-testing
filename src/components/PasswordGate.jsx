@@ -22,6 +22,7 @@ export default function PasswordGate({ children }) {
   const [submitting, setSubmitting] = useState(false)
 
   const expectedHash = import.meta.env.VITE_PASSWORD_HASH || DEFAULT_HASH
+  const buildSha = import.meta.env.VITE_BUILD_SHA || 'local'
 
   useEffect(() => {
     try {
@@ -88,6 +89,9 @@ export default function PasswordGate({ children }) {
           </h1>
           <p style={{ margin: '8px 0 0', fontSize: 14, lineHeight: 1.5, color: 'rgba(25, 31, 28, 0.72)' }}>
             {ready ? 'Enter the access password to view this prototype.' : 'Loading…'}
+          </p>
+          <p style={{ margin: '4px 0 0', fontSize: 11, lineHeight: 1.4, color: 'rgba(25, 31, 28, 0.45)' }}>
+            Build {buildSha}
           </p>
         </div>
 

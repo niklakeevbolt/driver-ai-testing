@@ -33,6 +33,7 @@ jobs:
           if [ -z "$PASSWORD" ]; then PASSWORD="driver-ai"; fi
           HASH=$(printf '%s' "$PASSWORD" | sha256sum | cut -d' ' -f1)
           echo "VITE_PASSWORD_HASH=$HASH" >> "$GITHUB_ENV"
+          echo "VITE_BUILD_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
 
       - run: npm run build
         env:
