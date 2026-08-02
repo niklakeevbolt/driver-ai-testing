@@ -240,6 +240,71 @@ function AirportChart() {
   )
 }
 
+function CampaignCard({ campaign, style }) {
+  const progress =
+    campaign.active && campaign.target
+      ? (campaign.completed ?? 0) / campaign.target
+      : campaign.progress ?? 0
+  const ordersLabel =
+    campaign.active && campaign.target
+      ? `Orders completed: ${campaign.completed ?? 0}/${campaign.target}`
+      : campaign.target
+        ? `${campaign.target} rides`
+        : null
+
+  return (
+    <div
+      style={{
+        background: 'rgba(73,93,122,0.08)',
+        border: '1px solid #ebedef',
+        borderRadius: 16,
+        padding: '14px 20px',
+        ...style,
+      }}
+    >
+      <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px', marginBottom: 4 }}>
+        {campaign.label}
+      </p>
+      <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px', marginBottom: 4 }}>
+        {campaign.name}
+      </p>
+      {campaign.bonus ? (
+        <p style={{
+          ...FF, fontSize: 16, fontWeight: 600, color: '#191f1c', letterSpacing: '-0.176px',
+          marginBottom: campaign.active || ordersLabel ? 10 : 0,
+        }}>
+          Earn {campaign.bonus}
+          {!campaign.active && campaign.target ? ` · ${campaign.target} rides` : ''}
+        </p>
+      ) : null}
+      {campaign.active ? (
+        <>
+          <div style={{ height: 4, background: '#d7dadf', borderRadius: 2, marginBottom: 6 }}>
+            <div style={{ height: '100%', width: `${Math.round(progress * 100)}%`, background: '#808c9f', borderRadius: 2 }} />
+          </div>
+          {ordersLabel ? (
+            <p style={{ ...FF, fontSize: 12, fontWeight: 400, color: '#808c9f' }}>{ordersLabel}</p>
+          ) : null}
+        </>
+      ) : null}
+    </div>
+  )
+}
+
+function ScheduledRideMeta({ km, rider }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+      <p style={{ ...FF, fontSize: 13, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px' }}>Bolt</p>
+      <span style={{ width: 1, height: 12, background: '#d7dadf', flexShrink: 0 }} />
+      <RouteIcon />
+      <p style={{ ...FF, fontSize: 13, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px' }}>{km}</p>
+      <span style={{ width: 1, height: 12, background: '#d7dadf', flexShrink: 0 }} />
+      <UserIcon />
+      <p style={{ ...FF, fontSize: 13, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px' }}>{rider}</p>
+    </div>
+  )
+}
+
 function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
   const country = useCountry()
   const title = preferencesVisited ? 'Steady demand in your area' : country.demand.peakOfferTitle
@@ -282,26 +347,8 @@ function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
       <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px', marginTop: 12, marginBottom: 8 }}>
         Campaigns
       </p>
-      <div style={{ background: 'rgba(73,93,122,0.08)', border: '1px solid #ebedef', borderRadius: 16, padding: '14px 20px', marginBottom: 8 }}>
-        <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px', marginBottom: 4 }}>
-          {campaignActive.label}
-        </p>
-        <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px', marginBottom: 10 }}>
-          {campaignActive.name}
-        </p>
-        <div style={{ height: 4, background: '#d7dadf', borderRadius: 2, marginBottom: 6 }}>
-          <div style={{ height: '100%', width: `${Math.round((campaignActive.progress ?? 0) * 100)}%`, background: '#808c9f', borderRadius: 2 }} />
-        </div>
-        <p style={{ ...FF, fontSize: 12, fontWeight: 400, color: '#808c9f' }}>{campaignActive.orders}</p>
-      </div>
-      <div style={{ background: 'rgba(73,93,122,0.08)', border: '1px solid #ebedef', borderRadius: 16, padding: '14px 20px', marginBottom: 20 }}>
-        <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px', marginBottom: 4 }}>
-          {campaignUpcoming.label}
-        </p>
-        <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px' }}>
-          {campaignUpcoming.name}
-        </p>
-      </div>
+      <CampaignCard campaign={campaignActive} style={{ marginBottom: 8 }} />
+      <CampaignCard campaign={campaignUpcoming} style={{ marginBottom: 20 }} />
 
       {/* Scheduled rides */}
       <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px', marginBottom: 8 }}>
@@ -317,16 +364,7 @@ function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
         <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', marginBottom: 6 }}>
           {scheduled.address}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-          <VehicleIcon />
-          <span style={{ width: 1, height: 12, background: '#d7dadf', flexShrink: 0 }} />
-          <RouteIcon />
-          <span style={{ width: 1, height: 12, background: '#d7dadf', flexShrink: 0 }} />
-          <UserIcon />
-          <p style={{ ...FF, fontSize: 13, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px' }}>
-            Category | 12 km | Rider
-          </p>
-        </div>
+        <ScheduledRideMeta km={scheduled.km} rider={scheduled.rider} />
         <p style={{ ...FF, fontSize: 13, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px' }}>
           You can start driving at {scheduled.canStart}.
         </p>
@@ -485,22 +523,14 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
           ) : (
             <div style={{ marginBottom: 24 }}>
               {day.campaigns.map((c, ci) => (
-                <div key={ci} style={{
-                  background: 'rgba(73,93,122,0.08)', border: '1px solid #ebedef',
-                  borderRadius: 16, padding: '16px 24px',
-                  marginBottom: ci < day.campaigns.length - 1 ? 8 : 0,
-                }}>
-                  <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', marginBottom: 4 }}>{c.label}</p>
-                  <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px', marginBottom: c.active ? 10 : 0 }}>{c.name}</p>
-                  {c.active && (
-                    <>
-                      <div style={{ height: 6, background: '#d7dadf', borderRadius: 100, marginBottom: 8 }}>
-                        <div style={{ height: '100%', width: `${c.progress * 100}%`, background: '#808c9f', borderRadius: 100 }} />
-                      </div>
-                      <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#191f1c' }}>{c.orders}</p>
-                    </>
-                  )}
-                </div>
+                <CampaignCard
+                  key={ci}
+                  campaign={c}
+                  style={{
+                    padding: '16px 24px',
+                    marginBottom: ci < day.campaigns.length - 1 ? 8 : 0,
+                  }}
+                />
               ))}
             </div>
           )}
@@ -526,15 +556,8 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
                     <ChevronRightIcon />
                   </div>
                   <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', marginBottom: 6 }}>{r.address}</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <VehicleIcon />
-                    <span style={{ width: 1, height: 12, background: '#d7dadf', flexShrink: 0 }} />
-                    <RouteIcon />
-                    <span style={{ width: 1, height: 12, background: '#d7dadf', flexShrink: 0 }} />
-                    <UserIcon />
-                    <p style={{ ...FF, fontSize: 13, fontWeight: 400, color: '#808c9f' }}>Category | 12 km | Rider</p>
-                  </div>
-                  <div style={{ height: 1, background: '#ebedef', marginBottom: 8 }} />
+                  <ScheduledRideMeta km={r.km} rider={r.rider} />
+                  <div style={{ height: 1, background: '#ebedef', marginBottom: 8, marginTop: 2 }} />
                   <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f' }}>You can start driving at {r.canStart}.</p>
                 </div>
               ))}
