@@ -281,7 +281,7 @@ export default function EarningsIsland({ onOpenChange }) {
             3.60 € •
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>15</span>
+            <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>2</span>
             <img src={imgDiamond} alt="" style={{ width: 16, height: 16, display: 'block' }} />
           </div>
         </div>
