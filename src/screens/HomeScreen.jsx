@@ -842,7 +842,11 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
   const [sheetTop, setSheetTop] = useState(EXPANDED_TOP)
   const [isDragging, setIsDragging] = useState(false)
   const [mapZoom, setMapZoom] = useState(OVERVIEW_ZOOM)
-  const drag = useRef({ active: false, startY: 0, startTop: 0 })
+  const drag = useRef({ active: false, startY: 0, startTop: 0, currentTop: EXPANDED_TOP })
+  const sheetScrollRef = useRef(null)
+  // Scroll is locked until the sheet is fully open — a swipe on a mid/collapsed
+  // sheet expands it instead of scrolling content underneath.
+  const isFullscreen = sheetTop <= FULLSCREEN_TOP + 10
 
   const [oppsSheetTop, setOppsSheetTop] = useState(1100)
   const [isOppsDragging, setIsOppsDragging] = useState(false)
@@ -862,7 +866,12 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
     setOppsOpen(false)
   }
 
-  const snapTo = (top) => setSheetTop(top)
+  const snapTo = (top) => {
+    if (top > FULLSCREEN_TOP + 10 && sheetScrollRef.current) {
+      sheetScrollRef.current.scrollTop = 0
+    }
+    setSheetTop(top)
+  }
 
   const handleZoneSelect = (zone) => {
     const next = selectedZone?.id === zone.id ? null : zone
@@ -877,24 +886,50 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
 
   const onDragStart = (e) => {
     const y = e.touches?.[0]?.clientY ?? e.clientY
-    drag.current = { active: true, startY: y, startTop: sheetTop }
+    drag.current = { active: true, startY: y, startTop: sheetTop, currentTop: sheetTop }
     setIsDragging(true)
+  }
+
+  const onSheetBodyDragStart = (e) => {
+    if (isFullscreen) return
+    // Let taps on controls fire without starting a sheet drag.
+    if (e.target.closest?.('button, a, input, textarea, select, [role="button"]')) return
+    onDragStart(e)
   }
 
   const onDragMove = (e) => {
     if (!drag.current.active) return
     const y = e.touches?.[0]?.clientY ?? e.clientY
     const next = Math.max(FULLSCREEN_TOP, Math.min(COLLAPSED_TOP, drag.current.startTop + (y - drag.current.startY)))
+    drag.current.currentTop = next
     setSheetTop(next)
   }
 
   const onDragEnd = () => {
     if (!drag.current.active) return
+    const startTop = drag.current.startTop
+    const currentTop = drag.current.currentTop
     drag.current.active = false
     setIsDragging(false)
-    if (sheetTop < (FULLSCREEN_TOP + EXPANDED_TOP) / 2) {
+
+    // From mid/collapsed, an upward swipe always opens fullscreen first —
+    // content scroll is locked until that state. Downward keeps the usual
+    // expanded ↔ collapsed snap.
+    if (startTop > FULLSCREEN_TOP + 10) {
+      const dy = currentTop - startTop
+      if (dy < -24) {
+        snapTo(FULLSCREEN_TOP)
+      } else if (dy > 24 || currentTop >= (EXPANDED_TOP + COLLAPSED_TOP) / 2) {
+        snapTo(COLLAPSED_TOP)
+      } else {
+        snapTo(EXPANDED_TOP)
+      }
+      return
+    }
+
+    if (currentTop < (FULLSCREEN_TOP + EXPANDED_TOP) / 2) {
       snapTo(FULLSCREEN_TOP)
-    } else if (sheetTop < (EXPANDED_TOP + COLLAPSED_TOP) / 2) {
+    } else if (currentTop < (EXPANDED_TOP + COLLAPSED_TOP) / 2) {
       snapTo(EXPANDED_TOP)
     } else {
       snapTo(COLLAPSED_TOP)
@@ -1088,12 +1123,20 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
           transition: isDragging ? 'none' : 'height 0.32s cubic-bezier(0.4,0,0.2,1)',
         }} />
 
-        <div style={{
-          flex: 1,
-          overflowY: sheetTop <= EXPANDED_TOP + 10 && !isDragging ? 'auto' : 'hidden',
-          overflowX: 'hidden',
-          paddingBottom: FOOTER_H,
-        }}>
+        <div
+          ref={sheetScrollRef}
+          style={{
+            flex: 1,
+            overflowY: isFullscreen && !isDragging ? 'auto' : 'hidden',
+            overflowX: 'hidden',
+            paddingBottom: FOOTER_H,
+            // When not fullscreen, hand the gesture to the sheet drag so the
+            // browser can't start a scroll that never unlocks.
+            touchAction: isFullscreen ? 'pan-y' : 'none',
+          }}
+          onMouseDown={isFullscreen ? undefined : onSheetBodyDragStart}
+          onTouchStart={isFullscreen ? undefined : onSheetBodyDragStart}
+        >
           {selectedZone
             ? <ZoneSheet zone={selectedZone} onClose={handleDeselect} />
             : <DefaultSheet onOppsOpen={openOpps} />
