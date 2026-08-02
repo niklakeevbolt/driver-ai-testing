@@ -12,7 +12,6 @@ import {
   Surge,
   Time,
   User,
-  Vehicle,
 } from '@icons'
 
 import { CarTopViewIllustration } from '../components/Illustrations.jsx'
@@ -184,10 +183,6 @@ function CalendarIcon() {
 
 function ChevronRightIcon() {
   return <ChevronRight size="md" style={{ color: '#9aa1a8' }} />
-}
-
-function VehicleIcon() {
-  return <Vehicle size="xs" style={{ color: '#808c9f' }} />
 }
 
 function RouteIcon() {
