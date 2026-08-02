@@ -1,5 +1,5 @@
 export const PROFILE = {
-  name: 'Jerry Finerider',
+  name: 'Driver Name',
   tier: 'Silver',
   fleet: 'Bolt Flex',
 }

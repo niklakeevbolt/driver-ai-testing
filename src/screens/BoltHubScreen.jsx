@@ -13,6 +13,7 @@ import {
 import { StackOfDocumentsIllustration } from '../components/Illustrations.jsx'
 import SlidingTabPanels from '../components/SlidingTabPanels.jsx'
 import { useCountry } from '../context/CountryContext.jsx'
+import { daysAgoStamp, todayTimeStamp } from '../data/dates.js'
 
 const FF = { fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)' }
 
@@ -98,9 +99,9 @@ function InboxTab({ hasTasks, country }) {
         )}
         <div>
           <UpdateItem date="Today"  title={`Earn ${country.money.amount(country.hub.inviteAmount, { decimals: 0 })}`} subtitle="Invite friends to drive" hasIndicator />
-          <UpdateItem date="Jul 30" title="Safety toolkit"  subtitle="Learn how to stay safe during trips" />
-          <UpdateItem date="Jul 25" title="Five star trips"  subtitle="How to get five star ratings" />
-          <UpdateItem date="Jul 24" title="Safety toolkit"  subtitle="Learn how to stay safe during trips" />
+          <UpdateItem date={daysAgoStamp(3)} title="Safety toolkit"  subtitle="Learn how to stay safe during trips" />
+          <UpdateItem date={daysAgoStamp(8)} title="Five star trips"  subtitle="How to get five star ratings" />
+          <UpdateItem date={daysAgoStamp(9)} title="Safety toolkit"  subtitle="Learn how to stay safe during trips" />
         </div>
       </div>
 
@@ -236,8 +237,8 @@ function HelpTab({ hasSupportMsg, country }) {
       {/* Get help with a trip */}
       <div>
         <SectionHeader title="Get help with a trip" seeAll paddingTop={36} />
-        <TripItem date="8 Mar, 11:45" destination={country.hub.tripFrom} amount={country.money.spaced(country.hub.tripAmount)} status="Finished" />
-        <TripItem date="8 Mar, 12:15" destination={country.hub.tripTo} status="Passenger did not show" />
+        <TripItem date={todayTimeStamp('11:45')} destination={country.hub.tripFrom} amount={country.money.spaced(country.hub.tripAmount)} status="Finished" />
+        <TripItem date={todayTimeStamp('12:15')} destination={country.hub.tripTo} status="Passenger did not show" />
       </div>
 
       <SectionDivider />

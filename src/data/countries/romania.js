@@ -1,5 +1,6 @@
 import { createMoneyFormatter } from './format.js'
 import { buildZones } from './helpers.js'
+import { sameDayWindow } from '../dates.js'
 
 const money = createMoneyFormatter({
   code: 'RON',
@@ -159,8 +160,8 @@ const zones = buildZones(center, districts, money)
 const peakBonus = 12
 
 export const romania = {
-  id: 'Romania',
-  slug: 'Romania',
+  id: 'RO',
+  slug: 'RO',
   name: 'Romania',
   capital: 'Bucharest',
   money,
@@ -251,7 +252,7 @@ export const romania = {
       },
       {
         active: false,
-        label: '01 Sep, 05:00 – 15 Sep, 11:00',
+        label: sameDayWindow('05:00', '22:00'),
         name: 'Otopeni Airport Quest',
         bonus: money.amount(250, { decimals: 0 }),
         target: 30,
@@ -277,7 +278,7 @@ export const romania = {
           },
           {
             active: false,
-            label: '01 Sep, 05:00 – 15 Sep, 11:00',
+            label: sameDayWindow('05:00', '22:00'),
             name: 'Otopeni Airport Quest',
             bonus: money.amount(250, { decimals: 0 }),
             target: 30,
@@ -298,7 +299,7 @@ export const romania = {
         campaigns: [
           {
             active: false,
-            label: '15 Sep, 07:00 – 22 Sep, 10:00',
+            label: sameDayWindow('07:00', '22:00'),
             name: 'Dimineața în Pipera',
             bonus: money.amount(180, { decimals: 0 }),
             target: 28,
@@ -319,14 +320,14 @@ export const romania = {
         campaigns: [
           {
             active: false,
-            label: '10 Sep, 00:00 – 25 Sep, 23:59',
+            label: sameDayWindow('00:00', '23:59'),
             name: 'Bonus de mijloc de săptămână',
             bonus: money.amount(320, { decimals: 0 }),
             target: 45,
           },
           {
             active: false,
-            label: '01 Sep, 17:00 – 30 Sep, 23:00',
+            label: sameDayWindow('17:00', '23:00'),
             name: 'Seara în Floreasca',
             bonus: money.amount(120, { decimals: 0 }),
             target: 20,
@@ -355,7 +356,7 @@ export const romania = {
         campaigns: [
           {
             active: true,
-            label: 'Active now, ends Fri 23:59',
+            label: 'Active now, ends today 23:59',
             name: 'Weekend Kickoff',
             bonus: money.amount(200, { decimals: 0 }),
             completed: 5,
@@ -378,7 +379,7 @@ export const romania = {
         campaigns: [
           {
             active: false,
-            label: '20 Sep, 10:00 – 30 Sep, 22:00',
+            label: sameDayWindow('10:00', '22:00'),
             name: 'Duminică în Centru',
             bonus: money.amount(140, { decimals: 0 }),
             target: 20,

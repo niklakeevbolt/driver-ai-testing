@@ -30,7 +30,7 @@ function MenuRow({ icon, label, labelClass, onClick, trailing }) {
 export default function SideMenu({
   isOpen,
   onClose,
-  userName = 'Bruno Arantes',
+  userName = 'Driver Name',
   onNavigate,
   onLogout,
 }) {

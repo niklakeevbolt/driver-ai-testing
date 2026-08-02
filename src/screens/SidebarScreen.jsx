@@ -20,7 +20,6 @@ import {
 import TierRewardsIcon from '../components/profile/TierRewardsIcon.jsx'
 import RewardsPanel from '../components/profile/RewardsPanel.jsx'
 import SlidingTabPanels from '../components/SlidingTabPanels.jsx'
-import profilePhoto from '../assets/profile/avatar.png'
 import { useCountry } from '../context/CountryContext.jsx'
 import { AT_RISK_ACTIONS, METRICS, PROFILE } from '../data/profile.js'
 
@@ -258,7 +257,7 @@ export default function SidebarScreen({ goBack }) {
 
         <div className="absolute left-1/2 top-4 size-[68px] -translate-x-1/2 overflow-hidden rounded-full">
           <img
-            src={profilePhoto}
+            src={country.avatar}
             alt=""
             className="size-full object-cover"
             draggable={false}

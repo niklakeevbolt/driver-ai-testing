@@ -5,7 +5,7 @@ import http from 'node:http'
 const BASE = process.argv[2] ?? 'http://localhost:5174/'
 const PORT = 9271
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const MARKETS = ['UK', 'Romania', 'SouthAfrica']
+const MARKETS = ['UK', 'RO', 'ZA']
 
 const chrome = spawn(
   CHROME,
@@ -78,7 +78,7 @@ const unlock = async () => {
     `(() => {
       const i = document.querySelector('input[type=password]');
       if (!i) return;
-      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set.call(i,'driver-ai');
+      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set.call(i,'bolt2026');
       i.dispatchEvent(new Event('input',{bubbles:true}));
       document.querySelector('button[type=submit]')?.click();
     })()`,

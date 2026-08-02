@@ -30,7 +30,7 @@ jobs:
       - name: Compute password hash
         run: |
           PASSWORD="${{ secrets.SITE_PASSWORD }}"
-          if [ -z "$PASSWORD" ]; then PASSWORD="driver-ai"; fi
+          if [ -z "$PASSWORD" ]; then PASSWORD="bolt2026"; fi
           HASH=$(printf '%s' "$PASSWORD" | sha256sum | cut -d' ' -f1)
           echo "VITE_PASSWORD_HASH=$HASH" >> "$GITHUB_ENV"
           echo "VITE_BUILD_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"

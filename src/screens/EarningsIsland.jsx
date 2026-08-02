@@ -13,6 +13,7 @@ import {
   REWARDS_PROGRESS,
   REWARDS_PROGRESS_FILL_RATIO,
 } from '../data/rewards.js'
+import { yesterdayStamp } from '../data/dates.js'
 
 const FF = { fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)' }
 const ELEV2 = '0px 4px 12px rgba(0,0,0,0.2)'
@@ -295,7 +296,7 @@ export default function EarningsIsland({ onOpenChange }) {
           ...FF, fontSize: 16, fontWeight: 400, color: 'rgba(0,10,7,0.63)',
           letterSpacing: '-0.176px', lineHeight: '24px',
         }}>
-          Last ride • 26 June, 12:24
+          Last ride • {yesterdayStamp()}
         </p>
 
         {/* Expanded detail — fades in as height grows past 78px */}

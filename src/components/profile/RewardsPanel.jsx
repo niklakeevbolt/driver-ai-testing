@@ -15,6 +15,7 @@ import {
   REWARDS_TIER_COLORS,
   SILVER_BENEFITS,
 } from '../../data/rewards.js'
+import { rewardsMonthTitle } from '../../data/dates.js'
 import TierRewardsIcon from './TierRewardsIcon.jsx'
 
 const PARTNER_LOGOS = {
@@ -61,7 +62,8 @@ function RewardsSectionHeader({ title, showViewAll = false }) {
 }
 
 function ProgressSection() {
-  const { title, subtitle, points, milestones } = REWARDS_PROGRESS
+  const { subtitle, points, milestones } = REWARDS_PROGRESS
+  const title = rewardsMonthTitle()
 
   return (
     <div className="w-full px-6">

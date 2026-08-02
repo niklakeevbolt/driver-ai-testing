@@ -17,7 +17,6 @@ import {
 import { CarTopViewIllustration } from '../components/Illustrations.jsx'
 import { useCountry } from '../context/CountryContext.jsx'
 import 'leaflet/dist/leaflet.css'
-import avatarImg from '../assets/avatar.png'
 import EarningsIsland from './EarningsIsland'
 
 // ─── Leaflet icon fix (Vite) ──────────────────────────────────────
@@ -1131,15 +1130,12 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
         zIndex: 10,
       }}>
         <button ref={fabRef} className="fab fab-profile" onClick={() => navigate('sidebar')} style={{
-          overflow: 'hidden', padding: avatarImg ? 0 : undefined,
+          overflow: 'hidden', padding: 0,
           opacity: sidebarPhase !== 'closed' ? 0 : earningsOpen ? 0.6 : 1,
           transform: earningsOpen ? 'translateX(-8px)' : 'translateX(0)',
           transition: sidebarPhase === 'closed' ? 'opacity 0.15s, transform 0.3s cubic-bezier(0.34,1.08,0.64,1)' : 'none',
         }}>
-          {avatarImg
-            ? <img src={avatarImg} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : <User size="lg" style={{ color: 'var(--content-primary)' }} />
-          }
+          <img src={country.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </button>
         <div style={{ width: 113, height: 48, flexShrink: 0 }} />
         <button ref={hubFabRef} className="fab" style={{ position: 'relative', transform: earningsOpen ? 'translateX(8px)' : 'translateX(0)', opacity: isHubOpen ? 0 : 1, transition: 'opacity 0.15s, transform 0.3s cubic-bezier(0.34,1.08,0.64,1)' }} onClick={() => navigate('bolt-hub')}>

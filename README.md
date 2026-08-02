@@ -9,14 +9,14 @@ Each market has its own URL with local currency, campaigns, map location, addres
 | Market | Capital | Currency | URL |
 |---|---|---|---|
 | United Kingdom | London | GBP (£) | https://niklakeevbolt.github.io/driver-ai-testing/UK |
-| Romania | Bucharest | RON (lei) | https://niklakeevbolt.github.io/driver-ai-testing/Romania |
-| South Africa | Johannesburg | ZAR (R) | https://niklakeevbolt.github.io/driver-ai-testing/SouthAfrica |
+| Romania | Bucharest | RON (lei) | https://niklakeevbolt.github.io/driver-ai-testing/RO |
+| South Africa | Johannesburg | ZAR (R) | https://niklakeevbolt.github.io/driver-ai-testing/ZA |
 
 Root URL shows a market picker.
 
 ## Password
 
-Default: `driver-ai`
+Default: `bolt2026`
 
 Set GitHub repository secret `SITE_PASSWORD` to change it for production deploys.
 
@@ -27,7 +27,7 @@ npm install
 npm run dev
 ```
 
-Then open `http://localhost:5174/UK`, `/Romania`, or `/SouthAfrica`.
+Then open `http://localhost:5174/UK`, `/RO`, or `/ZA`.
 
 ## Deploy
 

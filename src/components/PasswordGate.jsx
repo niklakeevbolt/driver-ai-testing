@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 
 const SESSION_KEY = 'driver-ai-testing-auth'
-const DEFAULT_HASH = 'cac3ee3ff6501eadea0106782808fd53ffccf26ee872433c99886a9727379487'
+/** SHA-256 of "bolt2026" — overridden by VITE_PASSWORD_HASH in CI when SITE_PASSWORD is set. */
+const DEFAULT_HASH = 'e7a47afea53620f12ab86dd9dbcf4661fe4422ec675a7eef900a66c525f7a9ee'
 
 async function sha256(text) {
   if (!globalThis.crypto?.subtle) {

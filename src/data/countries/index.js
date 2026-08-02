@@ -1,11 +1,17 @@
 import { uk } from './uk.js'
 import { romania } from './romania.js'
 import { southAfrica } from './southAfrica.js'
+import avatarDefault from '../../assets/profile/avatar.png'
+import avatarZa from '../../assets/profile/avatar-za.jpg'
+
+uk.avatar = avatarDefault
+romania.avatar = avatarDefault
+southAfrica.avatar = avatarZa
 
 export const COUNTRIES = {
   UK: uk,
-  Romania: romania,
-  SouthAfrica: southAfrica,
+  RO: romania,
+  ZA: southAfrica,
 }
 
 export const COUNTRY_LIST = [uk, romania, southAfrica]

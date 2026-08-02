@@ -1,5 +1,5 @@
 export const REWARDS_PROGRESS = {
-  title: 'Your July progress',
+  // Title is resolved at render time via rewardsMonthTitle() so the month stays current.
   subtitle: 'Keep up to get the golden level!',
   points: 277,
   milestones: [

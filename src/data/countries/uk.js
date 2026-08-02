@@ -1,5 +1,6 @@
 import { createMoneyFormatter } from './format.js'
 import { buildZones } from './helpers.js'
+import { sameDayWindow } from '../dates.js'
 
 const money = createMoneyFormatter({
   code: 'GBP',
@@ -251,7 +252,7 @@ export const uk = {
       },
       {
         active: false,
-        label: '01 Sep, 06:00 – 15 Sep, 10:00',
+        label: sameDayWindow('06:00', '22:00'),
         name: 'Heathrow Morning Quest',
         bonus: money.amount(90, { decimals: 0 }),
         target: 35,
@@ -277,7 +278,7 @@ export const uk = {
           },
           {
             active: false,
-            label: '01 Sep, 06:00 – 15 Sep, 10:00',
+            label: sameDayWindow('06:00', '22:00'),
             name: 'Heathrow Morning Quest',
             bonus: money.amount(90, { decimals: 0 }),
             target: 35,
@@ -298,7 +299,7 @@ export const uk = {
         campaigns: [
           {
             active: false,
-            label: '15 Sep, 07:00 – 22 Sep, 10:00',
+            label: sameDayWindow('07:00', '22:00'),
             name: 'City Commute Boost',
             bonus: money.amount(70, { decimals: 0 }),
             target: 30,
@@ -319,14 +320,14 @@ export const uk = {
         campaigns: [
           {
             active: false,
-            label: '10 Sep, 00:00 – 25 Sep, 23:59',
+            label: sameDayWindow('00:00', '23:59'),
             name: 'Midweek Guarantee',
             bonus: money.amount(120, { decimals: 0 }),
             target: 50,
           },
           {
             active: false,
-            label: '01 Sep, 17:00 – 30 Sep, 23:00',
+            label: sameDayWindow('17:00', '23:00'),
             name: 'After-Work Shoreditch',
             bonus: money.amount(45, { decimals: 0 }),
             target: 20,
@@ -355,7 +356,7 @@ export const uk = {
         campaigns: [
           {
             active: true,
-            label: 'Active now, ends Fri 23:59',
+            label: 'Active now, ends today 23:59',
             name: 'Weekend Kickoff',
             bonus: money.amount(75, { decimals: 0 }),
             completed: 6,
@@ -378,7 +379,7 @@ export const uk = {
         campaigns: [
           {
             active: false,
-            label: '20 Sep, 10:00 – 30 Sep, 22:00',
+            label: sameDayWindow('10:00', '22:00'),
             name: 'Sunday West End',
             bonus: money.amount(60, { decimals: 0 }),
             target: 22,

@@ -1,5 +1,6 @@
 import { createMoneyFormatter } from './format.js'
 import { buildZones } from './helpers.js'
+import { sameDayWindow } from '../dates.js'
 
 const money = createMoneyFormatter({
   code: 'ZAR',
@@ -160,8 +161,8 @@ const zones = buildZones(center, districts, money)
 const peakBonus = 25
 
 export const southAfrica = {
-  id: 'SouthAfrica',
-  slug: 'SouthAfrica',
+  id: 'ZA',
+  slug: 'ZA',
   name: 'South Africa',
   capital: 'Johannesburg',
   money,
@@ -252,7 +253,7 @@ export const southAfrica = {
       },
       {
         active: false,
-        label: '01 Sep, 05:00 – 15 Sep, 10:00',
+        label: sameDayWindow('05:00', '22:00'),
         name: 'OR Tambo Airport Quest',
         bonus: money.amount(450, { decimals: 0 }),
         target: 30,
@@ -278,7 +279,7 @@ export const southAfrica = {
           },
           {
             active: false,
-            label: '01 Sep, 05:00 – 15 Sep, 10:00',
+            label: sameDayWindow('05:00', '22:00'),
             name: 'OR Tambo Airport Quest',
             bonus: money.amount(450, { decimals: 0 }),
             target: 30,
@@ -299,7 +300,7 @@ export const southAfrica = {
         campaigns: [
           {
             active: false,
-            label: '15 Sep, 06:00 – 22 Sep, 10:00',
+            label: sameDayWindow('06:00', '22:00'),
             name: 'Morning Sandton Run',
             bonus: money.amount(320, { decimals: 0 }),
             target: 28,
@@ -320,14 +321,14 @@ export const southAfrica = {
         campaigns: [
           {
             active: false,
-            label: '10 Sep, 00:00 – 25 Sep, 23:59',
+            label: sameDayWindow('00:00', '23:59'),
             name: 'Midweek Guarantee',
             bonus: money.amount(550, { decimals: 0 }),
             target: 45,
           },
           {
             active: false,
-            label: '01 Sep, 16:00 – 30 Sep, 22:00',
+            label: sameDayWindow('16:00', '22:00'),
             name: 'After-Work Rosebank',
             bonus: money.amount(220, { decimals: 0 }),
             target: 20,
@@ -356,7 +357,7 @@ export const southAfrica = {
         campaigns: [
           {
             active: true,
-            label: 'Active now, ends Fri 23:59',
+            label: 'Active now, ends today 23:59',
             name: 'Weekend Kickoff',
             bonus: money.amount(380, { decimals: 0 }),
             completed: 6,
@@ -379,7 +380,7 @@ export const southAfrica = {
         campaigns: [
           {
             active: false,
-            label: '20 Sep, 10:00 – 30 Sep, 22:00',
+            label: sameDayWindow('10:00', '22:00'),
             name: 'Sunday Sandton',
             bonus: money.amount(250, { decimals: 0 }),
             target: 22,
