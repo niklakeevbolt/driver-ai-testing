@@ -904,7 +904,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
   const [oppsDay, setOppsDay] = useState(0)
 
   const openOpps = () => {
-    setOppsSheetTop(EXPANDED_TOP)
+    setOppsSheetTop(FULLSCREEN_TOP)
     setOppsBarIdx(NOW_IDX)
     setOppsDay(0)
     setOppsOpen(true)
