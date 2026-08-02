@@ -520,30 +520,22 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
   const day = DAY_CONTENT[oppsDay]
 
   const tH = Math.max(0, CONTENT_STOP - sheetTop)
-  const sheetBg = tH > 0
-    ? `linear-gradient(to bottom, transparent ${tH}px, #fff ${tH}px)`
-    : '#fff'
 
   return (
     <div style={{
       position: 'absolute',
       top: sheetTop, bottom: 0, left: 0, right: 0,
-      background: sheetBg,
+      background: '#fff',
       borderRadius: sheetTop < 20 ? 0 : '24px 24px 0 0',
       boxShadow: sheetTop < 1000 ? '0px -4px 12px 0px rgba(0,0,0,0.15)' : 'none',
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
       transition: isDragging ? 'none' : 'top 0.32s cubic-bezier(0.4,0,0.2,1)',
-      zIndex: 60,
+      // Above the home sheet but under the FAB row, so the header buttons and
+      // earnings island stay on top exactly as they do over the home sheet.
+      zIndex: 6,
       pointerEvents: sheetTop > 900 ? 'none' : 'auto',
     }}>
-
-      {/* Transparent spacer — draggable, pins content when sheet goes fullscreen */}
-      <div
-        style={{ flexShrink: 0, height: tH, transition: isDragging ? 'none' : 'height 0.32s cubic-bezier(0.4,0,0.2,1)' }}
-        onMouseDown={tH > 0 ? onDragStart : undefined}
-        onTouchStart={tH > 0 ? onDragStart : undefined}
-      />
 
       {/* Drag handle */}
       <div
@@ -553,6 +545,13 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
       >
         <div style={{ width: 60, height: 6, background: 'rgba(0,0,0,0.10)', borderRadius: 10, margin: '0 auto' }} />
       </div>
+
+      {/* Spacer: pins content below the FAB row when the sheet goes fullscreen */}
+      <div
+        style={{ flexShrink: 0, height: tH, transition: isDragging ? 'none' : 'height 0.32s cubic-bezier(0.4,0,0.2,1)' }}
+        onMouseDown={tH > 0 ? onDragStart : undefined}
+        onTouchStart={tH > 0 ? onDragStart : undefined}
+      />
 
       <div style={{
         flex: 1,
