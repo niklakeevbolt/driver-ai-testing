@@ -7,16 +7,21 @@ import imgRouteDot from '../assets/earnings/route-dot.svg'
 import imgRouteStart from '../assets/earnings/route-marker-start.svg'
 import imgRouteLine from '../assets/earnings/route-line.svg'
 import imgRouteEnd from '../assets/earnings/route-marker-end.svg'
+import {
+  REWARDS_NEXT_TIER,
+  REWARDS_PROGRESS,
+  REWARDS_PROGRESS_FILL_RATIO,
+} from '../data/rewards.js'
 
 const FF = { fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)' }
 const ELEV2 = '0px 4px 12px rgba(0,0,0,0.2)'
 const NEUT  = 'rgba(0,45,30,0.07)'
 
 // Rewards progress, from Figma node 1873:43311. Two rectangles rather than an
-// exported asset so the fill keeps its 4px cap at any card width.
+// exported asset so the fill keeps its 4px cap at any card width. Points, next
+// tier and fill ratio come from the same source as Profile → Rewards.
 const PROGRESS_TRACK = '#e1e5ea'
 const PROGRESS_FILL  = '#191f1c'
-const PROGRESS_PCT   = 147 / 327
 
 // geometry — horizontal inset is fixed; card width tracks the phone screen so
 // left and right margins stay equal on any device width.
@@ -389,7 +394,7 @@ export default function EarningsIsland({ onOpenChange }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <img src={imgDiamond} alt="" style={{ width: 20, height: 20, display: 'block' }} />
-            <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>13910</span>
+            <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>{REWARDS_PROGRESS.points}</span>
           </div>
           <p style={{ ...FF, fontSize: 16, fontWeight: 400, color: '#191f1c', letterSpacing: '-0.176px', lineHeight: '24px' }}>
             Bolt Rewards
@@ -402,7 +407,7 @@ export default function EarningsIsland({ onOpenChange }) {
           top: 78, background: PROGRESS_TRACK,
         }}>
           <div style={{
-            width: `${PROGRESS_PCT * 100}%`, height: '100%',
+            width: `${REWARDS_PROGRESS_FILL_RATIO * 100}%`, height: '100%',
             background: PROGRESS_FILL, borderRadius: '0 4px 4px 0',
           }} />
         </div>
@@ -420,7 +425,9 @@ export default function EarningsIsland({ onOpenChange }) {
             ...FF, fontSize: 16, fontWeight: 400, color: 'rgba(0,10,7,0.63)',
             letterSpacing: '-0.176px', lineHeight: '24px',
           }}>
-            Earn 10090 more points to achieve Gold
+            {REWARDS_NEXT_TIER
+              ? `Earn ${REWARDS_NEXT_TIER.pointsAway} more points to achieve ${REWARDS_NEXT_TIER.name}`
+              : 'You have reached the top tier'}
           </p>
 
           {/* "Open Bolt Rewards" button — top:138 in card → top:48 inside this div */}

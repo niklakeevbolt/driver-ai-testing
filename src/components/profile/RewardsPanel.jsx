@@ -10,6 +10,7 @@ import progressDot from '../../assets/rewards/progress-dot.svg'
 import {
   GOLD_BENEFITS,
   REWARDS_PROGRESS,
+  REWARDS_PROGRESS_FILL_RATIO,
   REWARDS_TIER_COLORS,
   SILVER_BENEFITS,
   TOP_DISCOUNTS,
@@ -28,8 +29,6 @@ const BENEFIT_ILLUSTRATIONS = {
   commission: benefitCommission,
 }
 
-/** Figma progress fill: 133px of 328px track */
-const PROGRESS_FILL_RATIO = 133 / 328
 /** Figma progress dot center at 129px on 328px track — tooltip uses the same anchor */
 const PROGRESS_DOT_LEFT_RATIO = 129 / 328
 
@@ -97,7 +96,7 @@ function ProgressSection() {
           />
           <div
             className="absolute left-0 top-0.5 h-1 rounded-[10px] bg-secondary"
-            style={{ width: `${PROGRESS_FILL_RATIO * 100}%` }}
+            style={{ width: `${REWARDS_PROGRESS_FILL_RATIO * 100}%` }}
           />
           <img
             alt=""

@@ -11,6 +11,30 @@ export const REWARDS_PROGRESS = {
   ],
 }
 
+/** Figma progress fill: 133px of a 328px track. Shared so the Earnings Island bar matches the profile panel. */
+export const REWARDS_PROGRESS_FILL_RATIO = 133 / 328
+
+const TIER_NAMES = {
+  bronze: 'Bronze',
+  silver: 'Silver',
+  gold: 'Gold',
+  diamond: 'Diamond',
+  platinum: 'Platinum',
+}
+
+const nextMilestone = REWARDS_PROGRESS.milestones.find(
+  (milestone) => Number(milestone.label) > REWARDS_PROGRESS.points,
+)
+
+/** Tier the driver is working toward, derived from the ladder above so island copy can't drift. */
+export const REWARDS_NEXT_TIER = nextMilestone
+  ? {
+      tier: nextMilestone.tier,
+      name: TIER_NAMES[nextMilestone.tier],
+      pointsAway: Number(nextMilestone.label) - REWARDS_PROGRESS.points,
+    }
+  : null
+
 export const SILVER_BENEFITS = [
   {
     id: 'silver-rides',
