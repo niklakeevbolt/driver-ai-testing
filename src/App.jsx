@@ -38,7 +38,7 @@ export default function App() {
   const { darkMode, rtl } = useDeviceFrame()
   const [screen, setScreen] = useState('home')
   const [, setHistory] = useState([])
-  const [scenario, setScenario] = useState('tasks')
+  const [scenario, setScenario] = useState('none')
   const [menuOpen, setMenuOpen] = useState(false)
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_QUERY).matches)
 
