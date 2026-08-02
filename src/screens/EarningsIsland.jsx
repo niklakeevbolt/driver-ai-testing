@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { ChevronRight, Clear, Hide } from '@icons'
+import { useCountry } from '../context/CountryContext.jsx'
 import imgCalendar from '../assets/earnings/calendar-clock.png'
 import imgBankCard from '../assets/earnings/bank-card.png'
 import imgDiamond from '../assets/earnings/rewards-diamond.svg'
@@ -73,6 +74,7 @@ function XIcon() {
 // phase: 'closed' | 'init' | 'open' | 'exiting'
 // subCard: null | 'lastRide' | 'boltRewards'
 export default function EarningsIsland({ onOpenChange }) {
+  const country = useCountry()
   const [phase, setPhase]         = useState('closed')
   const [showCards, setShowCards] = useState(false)
   const [subCard, setSubCard]     = useState(null)
@@ -129,7 +131,7 @@ export default function EarningsIsland({ onOpenChange }) {
         }}
       >
         <span style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', lineHeight: '25px' }}>
-          208.00€
+          {country.money.amount(country.earnings.today)}
         </span>
       </button>
     )
@@ -192,7 +194,7 @@ export default function EarningsIsland({ onOpenChange }) {
           }}
         >
           <span style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', lineHeight: '25px' }}>
-            208.00€
+            {country.money.amount(country.earnings.today)}
           </span>
         </div>
 
@@ -217,7 +219,7 @@ export default function EarningsIsland({ onOpenChange }) {
             ...FF, fontSize: 28, fontWeight: 600, color: '#2a313c',
             letterSpacing: '-0.616px', lineHeight: '36px',
           }}>
-            208.00€
+            {country.money.amount(country.earnings.today)}
           </p>
           <p style={{
             position: 'absolute', top: 58, left: '50%', transform: 'translate(-50%, -50%)',
@@ -233,7 +235,7 @@ export default function EarningsIsland({ onOpenChange }) {
                 <img src={imgCalendar} alt="" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'flex-end' }}>
-                <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', lineHeight: '25px' }}>530.21€</p>
+                <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', lineHeight: '25px' }}>{country.money.amount(country.earnings.weekly)}</p>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span style={{ ...FF, fontSize: 16, fontWeight: 400, color: '#191f1c', letterSpacing: '-0.176px', lineHeight: '24px' }}>Weekly</span>
                   <ChevronIcon />
@@ -245,7 +247,7 @@ export default function EarningsIsland({ onOpenChange }) {
                 <img src={imgBankCard} alt="" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
               <div>
-                <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', lineHeight: '25px' }}>490.21€</p>
+                <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', lineHeight: '25px' }}>{country.money.amount(country.earnings.balance)}</p>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span style={{ ...FF, fontSize: 16, fontWeight: 400, color: '#191f1c', letterSpacing: '-0.176px', lineHeight: '24px' }}>Balance</span>
                   <ChevronIcon />
@@ -278,10 +280,10 @@ export default function EarningsIsland({ onOpenChange }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         }}>
           <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>
-            3.60 € •
+            {country.money.spaced(country.earnings.lastRideFare)} •
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>2</span>
+            <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>{country.earnings.lastRidePoints}</span>
             <img src={imgDiamond} alt="" style={{ width: 16, height: 16, display: 'block' }} />
           </div>
         </div>
@@ -342,7 +344,7 @@ export default function EarningsIsland({ onOpenChange }) {
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
                 <p style={{ flex: 1, ...FF, fontSize: 16, fontWeight: 400, color: '#2a313c', letterSpacing: '-0.176px', lineHeight: '24px' }}>
-                  Near Paldiski mnt.
+                  {country.lastRide.from}
                 </p>
                 <p style={{ width: 48, textAlign: 'right', paddingTop: 2, ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px', lineHeight: '20px', flexShrink: 0 }}>
                   11:05
@@ -350,7 +352,7 @@ export default function EarningsIsland({ onOpenChange }) {
               </div>
               <div style={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
                 <p style={{ flex: 1, ...FF, fontSize: 16, fontWeight: 400, color: '#2a313c', letterSpacing: '-0.176px', lineHeight: '24px' }}>
-                  Near Sinilille tee
+                  {country.lastRide.to}
                 </p>
                 <p style={{ width: 48, textAlign: 'right', paddingTop: 2, ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px', lineHeight: '20px', flexShrink: 0 }}>
                   11:23

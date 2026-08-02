@@ -32,33 +32,35 @@ import {
   Stop,
   User,
 } from '@icons'
+import { useCountry } from '../context/CountryContext.jsx'
 
 // instruction banner ends ~y=96, bottom sheet starts y=314
 // zoom 0 = far (3 big clusters), zoom 1 = medium (5 groups), zoom 2 = close (10 individual)
-const SURGE_BY_ZOOM = [
+// Positions only — labels are swapped in per country.navigation.surgeLabels.
+const SURGE_POSITIONS_BY_ZOOM = [
   [
-    { id: 'f0', x: 168, y: 158, label: '+€3.20' },
-    { id: 'f1', x: 74,  y: 258, label: '+€2.10' },
-    { id: 'f2', x: 310, y: 234, label: '+€2.80' },
+    { id: 'f0', x: 168, y: 158 },
+    { id: 'f1', x: 74,  y: 258 },
+    { id: 'f2', x: 310, y: 234 },
   ],
   [
-    { id: 'm0', x: 62,  y: 130, label: '+€2.50' },
-    { id: 'm1', x: 186, y: 118, label: '+€3.20' },
-    { id: 'm2', x: 312, y: 128, label: '+€2.10' },
-    { id: 'm3', x: 78,  y: 256, label: '+€2.10' },
-    { id: 'm4', x: 316, y: 236, label: '+€2.80' },
+    { id: 'm0', x: 62,  y: 130 },
+    { id: 'm1', x: 186, y: 118 },
+    { id: 'm2', x: 312, y: 128 },
+    { id: 'm3', x: 78,  y: 256 },
+    { id: 'm4', x: 316, y: 236 },
   ],
   [
-    { id: 'c0',  x: 44,  y: 118, label: '+€2.50' },
-    { id: 'c1',  x: 90,  y: 148, label: '+€2.10' },
-    { id: 'c2',  x: 158, y: 110, label: '+€3.20' },
-    { id: 'c3',  x: 212, y: 132, label: '+€1.80' },
-    { id: 'c4',  x: 276, y: 114, label: '+€2.10' },
-    { id: 'c5',  x: 336, y: 142, label: '+€1.60' },
-    { id: 'c6',  x: 52,  y: 238, label: '+€2.10' },
-    { id: 'c7',  x: 104, y: 276, label: '+€1.60' },
-    { id: 'c8',  x: 292, y: 218, label: '+€2.80' },
-    { id: 'c9',  x: 338, y: 254, label: '+€2.30' },
+    { id: 'c0',  x: 44,  y: 118 },
+    { id: 'c1',  x: 90,  y: 148 },
+    { id: 'c2',  x: 158, y: 110 },
+    { id: 'c3',  x: 212, y: 132 },
+    { id: 'c4',  x: 276, y: 114 },
+    { id: 'c5',  x: 336, y: 142 },
+    { id: 'c6',  x: 52,  y: 238 },
+    { id: 'c7',  x: 104, y: 276 },
+    { id: 'c8',  x: 292, y: 218 },
+    { id: 'c9',  x: 338, y: 254 },
   ],
 ]
 
@@ -66,8 +68,14 @@ const BLOB_SIZE  = [80, 56, 40]
 const LABEL_SIZE = [14, 13, 12]
 
 export default function NavigationScreen({ navigate, goBack }) {
+  const country = useCountry()
   const [view, setView] = useState('ride')
   const [zoom, setZoom] = useState(1)
+
+  const surgeLabels = country.navigation.surgeLabels
+  const surgeByZoom = SURGE_POSITIONS_BY_ZOOM.map((positions) =>
+    positions.map((pos, i) => ({ ...pos, label: surgeLabels[i % surgeLabels.length] }))
+  )
 
   // bottom sheet Y offset (px from screen top). Figma: top 314 = ~37% of 852px
   const SHEET_TOP = 314
@@ -98,7 +106,7 @@ export default function NavigationScreen({ navigate, goBack }) {
         <div style={{ position: 'absolute', top: 174, left: 188, fontSize: 20 }}>🚗</div>
 
         {/* Surge zones */}
-        {SURGE_BY_ZOOM[zoom].map(zone => (
+        {surgeByZoom[zoom].map(zone => (
           <div key={zone.id} style={{
             position: 'absolute', top: zone.y, left: zone.x,
             transform: 'translate(-50%, -50%)',
@@ -186,7 +194,7 @@ export default function NavigationScreen({ navigate, goBack }) {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-          }}>Oranienburger Straße</p>
+          }}>{country.navigation.banner}</p>
         </div>
         {/* Distance */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, flexShrink: 0 }}>
@@ -297,7 +305,7 @@ export default function NavigationScreen({ navigate, goBack }) {
         }}
         onClick={() => navigate('earnings')}
       >
-        <span className="ei-value">208.00€</span>
+        <span className="ei-value">{country.money.amount(country.earnings.today)}</span>
       </button>
 
       {/* Sidebar FAB — left-23, same height as earnings island */}
@@ -342,7 +350,7 @@ export default function NavigationScreen({ navigate, goBack }) {
         }} />
 
         {view === 'ride' ? (
-          <RideView setView={setView} />
+          <RideView setView={setView} country={country} />
         ) : (
           <ChatView goBack={() => setView('ride')} />
         )}
@@ -381,7 +389,7 @@ export default function NavigationScreen({ navigate, goBack }) {
   )
 }
 
-function RideView({ setView }) {
+function RideView({ setView, country }) {
   return (
     <>
       {/* Ride metrics — Heading M (28px), 3 columns centered */}
@@ -441,7 +449,7 @@ function RideView({ setView }) {
             lineHeight: '22px',
             whiteSpace: 'nowrap',
           }}>
-            Oranienburger Straße 12A
+            {country.navigation.from}
           </p>
           <p style={{
             fontFamily: 'var(--font-sans)',
@@ -463,7 +471,7 @@ function RideView({ setView }) {
               lineHeight: '22px',
               whiteSpace: 'nowrap',
             }}>
-              Karl-Liebknecht-Str. 29
+              {country.navigation.to}
             </p>
             <Edit size="xs" style={{ color: 'rgba(0,10,7,0.63)' }} />
           </div>

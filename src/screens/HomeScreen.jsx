@@ -16,6 +16,7 @@ import {
 } from '@icons'
 
 import { CarTopViewIllustration } from '../components/Illustrations.jsx'
+import { useCountry } from '../context/CountryContext.jsx'
 import 'leaflet/dist/leaflet.css'
 import avatarImg from '../assets/avatar.png'
 import EarningsIsland from './EarningsIsland'
@@ -28,155 +29,16 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 })
 
-const BERLIN_CENTER = [52.515, 13.405]
-const DRIVER_POS = [52.519, 13.412]
-const OVERVIEW_ZOOM = 12
-const ZONE_ZOOM = 14
-
-// DEMAND_BARS: 48 half-hour slots, midnight → midnight
+// DEMAND_BARS: 48 half-hour slots, midnight → midnight (shape shared; amounts are localised elsewhere)
 const DEMAND_BARS = [
   10, 7, 5, 4, 4, 5, 7, 12, 22, 38, 52, 62,
   70, 76, 72, 68, 60, 55, 52, 50, 48, 54, 62, 72,
   80, 90, 95, 86, 74, 67, 60, 62, 66, 74, 84, 90,
   96, 98, 92, 82, 70, 58, 46, 36, 28, 20, 14, 9,
 ]
-// After Preferences: local +€3 surge is gone — flatten peaks into a medium band.
+// After Preferences: local peak surge is gone — flatten peaks into a medium band.
 const MEDIUM_DEMAND_BARS = DEMAND_BARS.map((v) => Math.round(Math.min(58, v * 0.58 + 8)))
 const NOW_IDX = 21
-
-// Cluster / individual zones that cover the driver's current location.
-const DRIVER_AREA_ZONE_IDS = new Set(['mitte', 'mitte-w', 'mitte-e', 'alex'])
-
-// ─── Geography helper ─────────────────────────────────────────────
-// Approximate hexagon in lat/lng at ~52°N (cos factor ≈ 0.607 → aspect 1.65)
-function makeHex(lat, lng, r = 0.006) {
-  return Array.from({ length: 6 }, (_, i) => {
-    const a = (Math.PI / 3) * i
-    return [lat + r * Math.cos(a), lng + r * Math.sin(a) * 1.65]
-  })
-}
-
-// ─── Cluster zones (shown at zoom < 13) ──────────────────────────
-const CLUSTER_ZONES = [
-  {
-    id: 'mitte',
-    name: 'Mitte',
-    bonus: '+€3.00',
-    waitTime: '1–2 min',
-    level: 'Very busy',
-    subtitle: 'Surge ends in 1 hr 45 min.',
-    peakLabel: '6 AM – 12 PM',
-    peakStart: 12,
-    peakEnd: 24,
-    color: '#d94f3d',
-    fillColor: '#e8604e',
-    center: [52.521, 13.403],
-    polygon: [
-      [52.534, 13.381], [52.536, 13.399], [52.533, 13.420],
-      [52.524, 13.427], [52.512, 13.420], [52.508, 13.405],
-      [52.509, 13.388], [52.516, 13.375],
-    ],
-  },
-  {
-    id: 'friedrichshain',
-    name: 'Friedrichshain',
-    bonus: '+€2.00',
-    waitTime: '1–4 min',
-    level: 'Busy',
-    subtitle: 'Surge ends in 3 hr 20 min.',
-    peakLabel: '4 PM – 11 PM',
-    peakStart: 32,
-    peakEnd: 46,
-    color: '#c45e1a',
-    fillColor: '#e07030',
-    center: [52.514, 13.455],
-    polygon: [
-      [52.523, 13.438], [52.522, 13.453], [52.524, 13.472],
-      [52.517, 13.479], [52.507, 13.476], [52.504, 13.460],
-      [52.505, 13.440], [52.512, 13.434],
-    ],
-  },
-  {
-    id: 'kreuzberg',
-    name: 'Kreuzberg',
-    bonus: '+€1.50',
-    waitTime: '1–7 min',
-    level: 'Active',
-    subtitle: 'Surge ends in 2 hr 10 min.',
-    peakLabel: '1 PM – 8 PM',
-    peakStart: 26,
-    peakEnd: 40,
-    color: '#b06010',
-    fillColor: '#d4802a',
-    center: [52.499, 13.403],
-    polygon: [
-      [52.508, 13.384], [52.507, 13.400], [52.509, 13.418],
-      [52.501, 13.425], [52.492, 13.420], [52.490, 13.408],
-      [52.491, 13.390], [52.498, 13.378],
-    ],
-  },
-]
-
-// ─── Individual zones (shown at zoom ≥ 13) ───────────────────────
-const INDIVIDUAL_ZONES = [
-  // Mitte splits
-  {
-    id: 'mitte-w', name: 'Mitte West', bonus: '+€3.20', waitTime: '1–2 min',
-    level: 'Very busy', subtitle: 'Surge ends in 1 hr 45 min.', peakLabel: '6 AM – 11 AM', peakStart: 12, peakEnd: 22,
-    color: '#d94f3d', fillColor: '#e8604e',
-    center: [52.527, 13.386], polygon: makeHex(52.527, 13.386),
-  },
-  {
-    id: 'mitte-e', name: 'Mitte East', bonus: '+€2.80', waitTime: '1–3 min',
-    level: 'Very busy', subtitle: 'Surge ends in 2 hr.', peakLabel: '8 AM – 2 PM', peakStart: 16, peakEnd: 28,
-    color: '#c85a33', fillColor: '#d96a3f',
-    center: [52.527, 13.416], polygon: makeHex(52.527, 13.416),
-  },
-  {
-    id: 'alex', name: 'Alexanderplatz', bonus: '+€2.50', waitTime: '2–4 min',
-    level: 'Busy', subtitle: 'Surge ends in 1 hr 30 min.', peakLabel: '9 AM – 6 PM', peakStart: 18, peakEnd: 36,
-    color: '#c45e1a', fillColor: '#d87830',
-    center: [52.512, 13.403], polygon: makeHex(52.512, 13.403),
-  },
-  // Friedrichshain splits
-  {
-    id: 'friedr-w', name: 'Friedrichshain W.', bonus: '+€2.20', waitTime: '1–3 min',
-    level: 'Busy', subtitle: 'Surge ends in 3 hr.', peakLabel: '1 PM – 7 PM', peakStart: 26, peakEnd: 38,
-    color: '#c45e1a', fillColor: '#d87830',
-    center: [52.518, 13.440], polygon: makeHex(52.518, 13.440),
-  },
-  {
-    id: 'friedr-c', name: 'Friedrichshain', bonus: '+€2.00', waitTime: '2–4 min',
-    level: 'Busy', subtitle: 'Surge ends in 3 hr 20 min.', peakLabel: '6 PM – 11 PM', peakStart: 36, peakEnd: 46,
-    color: '#c45e1a', fillColor: '#d87830',
-    center: [52.512, 13.458], polygon: makeHex(52.512, 13.458),
-  },
-  {
-    id: 'lichtenberg', name: 'Lichtenberg', bonus: '+€1.60', waitTime: '3–6 min',
-    level: 'Active', subtitle: 'Surge ends in 4 hr.', peakLabel: '6 AM – 10 AM', peakStart: 12, peakEnd: 20,
-    color: '#b06010', fillColor: '#d4802a',
-    center: [52.507, 13.475], polygon: makeHex(52.507, 13.475),
-  },
-  // Kreuzberg splits
-  {
-    id: 'kreuz-n', name: 'Kreuzberg', bonus: '+€2.00', waitTime: '2–4 min',
-    level: 'Active', subtitle: 'Surge ends in 2 hr 10 min.', peakLabel: '2 PM – 8 PM', peakStart: 28, peakEnd: 40,
-    color: '#c45e1a', fillColor: '#d87830',
-    center: [52.504, 13.393], polygon: makeHex(52.504, 13.393),
-  },
-  {
-    id: 'kreuz-e', name: 'Kreuzberg East', bonus: '+€1.50', waitTime: '3–5 min',
-    level: 'Active', subtitle: 'Surge ends in 2 hr 30 min.', peakLabel: '7 PM – 11 PM', peakStart: 38, peakEnd: 46,
-    color: '#b06010', fillColor: '#d4802a',
-    center: [52.498, 13.420], polygon: makeHex(52.498, 13.420),
-  },
-  {
-    id: 'neukoelln', name: 'Neukölln', bonus: '+€1.40', waitTime: '4–7 min',
-    level: 'Active', subtitle: 'Surge ends in 3 hr.', peakLabel: '4 PM – 10 PM', peakStart: 32, peakEnd: 44,
-    color: '#b06010', fillColor: '#d4802a',
-    center: [52.483, 13.432], polygon: makeHex(52.483, 13.432),
-  },
-]
 
 function makeCarIcon() {
   const carMarkup = renderToStaticMarkup(
@@ -214,15 +76,15 @@ function getZoneActivity(zone, barIdx, normalizedDemand) {
 
 // ─── Map sub-components ───────────────────────────────────────────
 
-function MapController({ selectedZone }) {
+function MapController({ selectedZone, mapCenter, overviewZoom, zoneZoom }) {
   const map = useMap()
   useEffect(() => {
     if (selectedZone) {
-      map.flyTo(selectedZone.center, ZONE_ZOOM, { duration: 0.55 })
+      map.flyTo(selectedZone.center, zoneZoom, { duration: 0.55 })
     } else {
-      map.flyTo(BERLIN_CENTER, OVERVIEW_ZOOM, { duration: 0.45 })
+      map.flyTo(mapCenter, overviewZoom, { duration: 0.45 })
     }
-  }, [selectedZone, map])
+  }, [selectedZone, map, mapCenter, overviewZoom, zoneZoom])
   return null
 }
 
@@ -379,8 +241,11 @@ function AirportChart() {
 }
 
 function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
-  const title = preferencesVisited ? 'Steady demand in your area' : 'Earn +3€ per offer'
+  const country = useCountry()
+  const title = preferencesVisited ? 'Steady demand in your area' : country.demand.peakOfferTitle
   const bars = preferencesVisited ? MEDIUM_DEMAND_BARS : DEMAND_BARS
+  const [campaignActive, campaignUpcoming] = country.campaigns.home
+  const scheduled = country.campaigns.scheduled
 
   return (
     <div style={{ padding: '20px 20px 24px' }}>
@@ -419,22 +284,22 @@ function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
       </p>
       <div style={{ background: 'rgba(73,93,122,0.08)', border: '1px solid #ebedef', borderRadius: 16, padding: '14px 20px', marginBottom: 8 }}>
         <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px', marginBottom: 4 }}>
-          Active now, 3h 2min left
+          {campaignActive.label}
         </p>
         <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px', marginBottom: 10 }}>
-          Campaign 1
+          {campaignActive.name}
         </p>
         <div style={{ height: 4, background: '#d7dadf', borderRadius: 2, marginBottom: 6 }}>
-          <div style={{ height: '100%', width: '57%', background: '#808c9f', borderRadius: 2 }} />
+          <div style={{ height: '100%', width: `${Math.round((campaignActive.progress ?? 0) * 100)}%`, background: '#808c9f', borderRadius: 2 }} />
         </div>
-        <p style={{ ...FF, fontSize: 12, fontWeight: 400, color: '#808c9f' }}>Orders completed: 3/5</p>
+        <p style={{ ...FF, fontSize: 12, fontWeight: 400, color: '#808c9f' }}>{campaignActive.orders}</p>
       </div>
       <div style={{ background: 'rgba(73,93,122,0.08)', border: '1px solid #ebedef', borderRadius: 16, padding: '14px 20px', marginBottom: 20 }}>
         <p style={{ ...FF, fontSize: 14, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px', marginBottom: 4 }}>
-          01 Sep, 14:00 – 15 Sep, 12:00
+          {campaignUpcoming.label}
         </p>
         <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2f313f', letterSpacing: '-0.34px' }}>
-          Campaign 2
+          {campaignUpcoming.name}
         </p>
       </div>
 
@@ -445,12 +310,12 @@ function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
       <div style={{ background: 'rgba(73,93,122,0.08)', borderRadius: 12, padding: '14px 16px', marginBottom: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <span style={{ ...FF, fontSize: 13, fontWeight: 600, color: '#fff', background: '#414a55', borderRadius: 4, padding: '3px 8px', letterSpacing: '-0.1px' }}>
-            Pick-up at 11:50
+            Pick-up at {scheduled.pickup}
           </span>
           <ChevronRightIcon />
         </div>
         <p style={{ ...FF, fontSize: 20, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.34px', marginBottom: 6 }}>
-          Address Main Street 123
+          {scheduled.address}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
           <VehicleIcon />
@@ -463,7 +328,7 @@ function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
           </p>
         </div>
         <p style={{ ...FF, fontSize: 13, fontWeight: 400, color: '#808c9f', letterSpacing: '-0.084px' }}>
-          You can start driving at 11:10.
+          You can start driving at {scheduled.canStart}.
         </p>
       </div>
       <button style={{
@@ -498,16 +363,6 @@ const DEMAND_BY_DAY = [
   [22,16,12,9,8,8,10,14,18,22,26,30,34,36,36,34,30,28,26,24,22,20,22,26,30,34,38,40,38,34,28,26,28,30,34,36,34,30,26,22,18,14,10,8,6,5,4,3],
 ]
 
-const DAY_CONTENT = [
-  { campaigns: [{ active: true, label: 'Active now, 3h 2min left', name: 'Campaign 1', progress: 0.57, orders: 'Orders completed: 3/5' }, { active: false, label: '01 Sep, 14:00 – 15 Sep, 12:00', name: 'Campaign 2' }], rides: [{ pickup: '11:50', address: 'Address Main Street 123', canStart: '11:10' }], moreRides: 45 },
-  { campaigns: [{ active: false, label: '15 Sep, 08:00 – 22 Sep, 20:00', name: 'Morning Rush' }], rides: [{ pickup: '09:20', address: 'Friedrichstraße 43', canStart: '09:00' }], moreRides: 32 },
-  { campaigns: [{ active: false, label: '10 Sep, 00:00 – 25 Sep, 23:59', name: 'Mid-Week Bonus' }, { active: false, label: '01 Sep, 14:00 – 30 Sep, 12:00', name: 'Daily Driver' }], rides: [{ pickup: '10:15', address: 'Alexanderplatz 5', canStart: '09:55' }, { pickup: '15:30', address: 'Potsdamer Platz 1', canStart: '15:10' }], moreRides: 18 },
-  { campaigns: [], rides: [], moreRides: 28 },
-  { campaigns: [{ active: true, label: 'Active now, ends Fri 23:59', name: 'Weekend Kickoff', progress: 0.3, orders: 'Orders completed: 2/6' }], rides: [{ pickup: '18:00', address: 'Berlin Hbf, Europaplatz', canStart: '17:40' }], moreRides: 52 },
-  { campaigns: [], rides: [], moreRides: 61 },
-  { campaigns: [{ active: false, label: '20 Sep, 00:00 – 30 Sep, 23:59', name: 'Sunday Saver' }], rides: [{ pickup: '12:45', address: 'Kurfürstendamm 27', canStart: '12:25' }], moreRides: 15 },
-]
-
 function XCircleIcon() {
   return (
     <span style={{
@@ -526,7 +381,8 @@ function XCircleIcon() {
 }
 
 function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBarIdx, onBarIdx, oppsDay, onDayChange }) {
-  const day = DAY_CONTENT[oppsDay]
+  const country = useCountry()
+  const day = country.campaigns.dayContent[oppsDay]
 
   const tH = Math.max(0, CONTENT_STOP - sheetTop)
 
@@ -861,10 +717,20 @@ const CHART_BOTTOM_GAP = 12
 const MIN_COLLAPSED_TOP = 160
 
 export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, isHubOpen, hasTasks, hubBadge = 2, preferencesVisited = false }) {
+  const country = useCountry()
+  const {
+    center: mapCenter,
+    driverPos,
+    overviewZoom,
+    zoneZoom,
+    clusters: clusterZones,
+    individuals: individualZones,
+    driverAreaIds,
+  } = country.map
   const [selectedZone, setSelectedZone] = useState(null)
   const [earningsOpen, setEarningsOpen] = useState(false)
   const [oppsOpen, setOppsOpen] = useState(false)
-  const [mapZoom, setMapZoom] = useState(OVERVIEW_ZOOM)
+  const [mapZoom, setMapZoom] = useState(overviewZoom)
   const drag = useRef({ active: false, startY: 0, startTop: 0, currentTop: EXPANDED_TOP })
   const screenRef = useRef(null)
   const sheetScrollRef = useRef(null)
@@ -1139,8 +1005,9 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
       {/* Map */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <MapContainer
-          center={BERLIN_CENTER}
-          zoom={OVERVIEW_ZOOM}
+          key={country.slug}
+          center={mapCenter}
+          zoom={overviewZoom}
           zoomControl={false}
           attributionControl={false}
           style={{ width: '100%', height: '100%' }}
@@ -1149,34 +1016,39 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             subdomains="abcd"
           />
-          <MapController selectedZone={selectedZone} />
+          <MapController
+            selectedZone={selectedZone}
+            mapCenter={mapCenter}
+            overviewZoom={overviewZoom}
+            zoneZoom={zoneZoom}
+          />
           <MapClickHandler onDeselect={handleDeselect} />
           <ZoomWatcher onChange={setMapZoom} />
           {(() => {
             const dayBars = DEMAND_BY_DAY[oppsDay]
             const maxDayBar = Math.max(...dayBars)
             const normalizedDemand = oppsOpen ? dayBars[oppsBarIdx] / maxDayBar : 0
-            const clusterZones = preferencesVisited
-              ? CLUSTER_ZONES.filter((zone) => !DRIVER_AREA_ZONE_IDS.has(zone.id))
-              : CLUSTER_ZONES
-            const individualZones = preferencesVisited
-              ? INDIVIDUAL_ZONES.filter((zone) => !DRIVER_AREA_ZONE_IDS.has(zone.id))
-              : INDIVIDUAL_ZONES
+            const visibleClusters = preferencesVisited
+              ? clusterZones.filter((zone) => !driverAreaIds.has(zone.id))
+              : clusterZones
+            const visibleIndividuals = preferencesVisited
+              ? individualZones.filter((zone) => !driverAreaIds.has(zone.id))
+              : individualZones
             return oppsOpen ? (
-              individualZones.map(zone => (
+              visibleIndividuals.map((zone) => (
                 <AnimatedSurgeLayer
                   key={zone.id}
                   zone={zone}
                   visible={false}
                   selected={false}
                   onSelect={() => {}}
-                  small={true}
+                  small
                   heatmapActivity={getZoneActivity(zone, oppsBarIdx, normalizedDemand)}
                 />
               ))
             ) : (
               <>
-                {clusterZones.map(zone => (
+                {visibleClusters.map((zone) => (
                   <AnimatedSurgeLayer
                     key={zone.id}
                     zone={zone}
@@ -1186,20 +1058,20 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
                     small={false}
                   />
                 ))}
-                {individualZones.map(zone => (
+                {visibleIndividuals.map((zone) => (
                   <AnimatedSurgeLayer
                     key={zone.id}
                     zone={zone}
                     visible={mapZoom >= 13}
                     selected={selectedZone?.id === zone.id}
                     onSelect={() => handleZoneSelect(zone)}
-                    small={true}
+                    small
                   />
                 ))}
               </>
             )
           })()}
-          <Marker position={DRIVER_POS} icon={makeCarIcon()} />
+          <Marker position={driverPos} icon={makeCarIcon()} interactive={false} />
         </MapContainer>
       </div>
 

@@ -13,35 +13,25 @@
 // All typography and colors match App.css tokens where applicable
 
 import { IconBack } from '../icons'
-
-const WEEK_DATA = [
-  { day: 'Mon', amount: 38, rides: 6 },
-  { day: 'Tue', amount: 52, rides: 8 },
-  { day: 'Wed', amount: 41, rides: 7 },
-  { day: 'Thu', amount: 67, rides: 11 },
-  { day: 'Fri', amount: 84, rides: 14 },
-  { day: 'Sat', amount: 95, rides: 16 },
-  { day: 'Sun', amount: 42, rides: 7, today: true },
-]
-
-const TRIPS = [
-  { id: 1, from: 'Oranienburger Str.', to: 'Karl-Liebknecht-Str.', time: '10:14 AM', amount: '€ 8.40', km: '4.2 km', rating: 5 },
-  { id: 2, from: 'Prenzlauer Berg', to: 'Mitte', time: '9:02 AM', amount: '€ 6.20', km: '3.1 km', rating: 5 },
-  { id: 3, from: 'Friedrichshain', to: 'Kreuzberg', time: '8:11 AM', amount: '€ 9.80', km: '5.4 km', rating: 4 },
-]
-
-const STATS = [
-  { label: 'Online time', value: '6h 32m' },
-  { label: 'Rides', value: '7' },
-  { label: 'Acceptance', value: '94%' },
-  { label: 'Completion', value: '100%' },
-  { label: 'Avg. rating', value: '4.95' },
-  { label: 'Long rides', value: '2' },
-]
-
-const maxWeek = Math.max(...WEEK_DATA.map(d => d.amount))
+import { useCountry } from '../context/CountryContext.jsx'
 
 export default function EarningsScreen({ navigate, goBack }) {
+  const country = useCountry()
+  const { earnings, rates, money } = country
+
+  const weekData = earnings.week
+  const trips = earnings.trips.map((trip) => ({ ...trip, amount: money.spaced(trip.amount) }))
+  const stats = [
+    { label: 'Online time', value: '6h 32m' },
+    { label: 'Rides', value: '7' },
+    { label: 'Acceptance', value: rates.earningsAcceptance },
+    { label: 'Completion', value: '100%' },
+    { label: 'Avg. rating', value: '4.95' },
+    { label: 'Long rides', value: '2' },
+  ]
+
+  const maxWeek = Math.max(...weekData.map(d => d.amount))
+
   return (
     <div className="screen" style={{ background: '#fff', display: 'flex', flexDirection: 'column' }}>
       {/* Dark header */}
@@ -78,7 +68,7 @@ export default function EarningsScreen({ navigate, goBack }) {
           <div style={{
             fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)',
             fontSize: 44, fontWeight: 900, color: '#fff', letterSpacing: -2,
-          }}>€ 42.50</div>
+          }}>{money.amount(earnings.todayNet)}</div>
           <div style={{
             fontSize: 13, color: '#34D186', fontWeight: 600,
             marginTop: 4, fontFamily: 'var(--font-sans)',
@@ -89,7 +79,7 @@ export default function EarningsScreen({ navigate, goBack }) {
         <div style={{ display: 'flex', gap: 8, padding: '0 16px' }}>
           {[
             { icon: '🕐', label: 'Online', value: '6h 32m' },
-            { icon: '💳', label: 'Payout', value: '€ 284.20' },
+            { icon: '💳', label: 'Payout', value: money.amount(earnings.payout) },
           ].map(({ icon, label, value }) => (
             <div key={label} style={{
               flex: 1, background: 'rgba(255,255,255,0.08)',
@@ -123,7 +113,7 @@ export default function EarningsScreen({ navigate, goBack }) {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, height: 90 }}>
-            {WEEK_DATA.map(({ day, amount, today }) => (
+            {weekData.map(({ day, amount, today }) => (
               <div key={day} style={{
                 flex: 1, display: 'flex', flexDirection: 'column',
                 alignItems: 'center', height: '100%', justifyContent: 'flex-end',
@@ -133,7 +123,7 @@ export default function EarningsScreen({ navigate, goBack }) {
                   color: today ? '#111827' : '#9ca3af',
                   marginBottom: 3, fontFamily: 'var(--font-sans)',
                 }}>
-                  €{amount}
+                  {money.amount(amount, { decimals: 0 })}
                 </div>
                 <div style={{
                   width: '100%',
@@ -164,7 +154,7 @@ export default function EarningsScreen({ navigate, goBack }) {
         {/* Stat tiles */}
         <div style={{ padding: '0 20px 12px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-            {STATS.map(({ label, value }) => (
+            {stats.map(({ label, value }) => (
               <div key={label} style={{
                 background: '#f9fafb', borderRadius: 12, padding: '10px 12px',
                 border: '1px solid #f3f4f6',
@@ -204,7 +194,7 @@ export default function EarningsScreen({ navigate, goBack }) {
               <div style={{
                 fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)',
                 fontSize: 28, fontWeight: 900, color: '#111827', letterSpacing: -0.8,
-              }}>€ 284.20</div>
+              }}>{money.amount(earnings.payout)}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
               <button style={{
@@ -239,14 +229,14 @@ export default function EarningsScreen({ navigate, goBack }) {
               <div style={{
                 fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)',
                 fontSize: 13, fontWeight: 700, color: '#1db870',
-              }}>€ 284.20 / € 400</div>
+              }}>{money.amount(earnings.payout)} / {money.amount(earnings.goal, { decimals: 0 })}</div>
             </div>
             <div className="progress-track">
-              <div className="progress-fill" style={{ width: '71%' }} />
+              <div className="progress-fill" style={{ width: `${Math.min(100, (earnings.payout / earnings.goal) * 100)}%` }} />
             </div>
             <div style={{
               fontSize: 12, color: '#6b7280', marginTop: 6, fontFamily: 'var(--font-sans)',
-            }}>€ 115.80 remaining · 4 days left</div>
+            }}>{money.amount(earnings.goalRemaining)} remaining · 4 days left</div>
           </div>
         </div>
 
@@ -267,7 +257,7 @@ export default function EarningsScreen({ navigate, goBack }) {
             }} onClick={() => navigate('rides')}>See all →</button>
           </div>
 
-          {TRIPS.map(({ id, from, to, time, amount, km, rating }) => (
+          {trips.map(({ id, from, to, time, amount, km, rating }) => (
             <div key={id} style={{
               display: 'flex', alignItems: 'center', gap: 12,
               padding: '10px 20px',

@@ -12,6 +12,7 @@ import {
 } from '@icons'
 import { StackOfDocumentsIllustration } from '../components/Illustrations.jsx'
 import SlidingTabPanels from '../components/SlidingTabPanels.jsx'
+import { useCountry } from '../context/CountryContext.jsx'
 
 const FF = { fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)' }
 
@@ -38,7 +39,7 @@ function UpdateItem({ date, title, subtitle, hasIndicator }) {
 
 // ─── Inbox tab ────────────────────────────────────────────────────
 
-function InboxTab({ hasTasks }) {
+function InboxTab({ hasTasks, country }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 40 }}>
 
@@ -96,7 +97,7 @@ function InboxTab({ hasTasks }) {
           </div>
         )}
         <div>
-          <UpdateItem date="Today"  title="Earn 200€"       subtitle="Invite friends to drive"              hasIndicator />
+          <UpdateItem date="Today"  title={`Earn ${country.money.amount(country.hub.inviteAmount, { decimals: 0 })}`} subtitle="Invite friends to drive" hasIndicator />
           <UpdateItem date="Jul 30" title="Safety toolkit"  subtitle="Learn how to stay safe during trips" />
           <UpdateItem date="Jul 25" title="Five star trips"  subtitle="How to get five star ratings" />
           <UpdateItem date="Jul 24" title="Safety toolkit"  subtitle="Learn how to stay safe during trips" />
@@ -220,7 +221,7 @@ function MessagesSection() {
   )
 }
 
-function HelpTab({ hasSupportMsg }) {
+function HelpTab({ hasSupportMsg, country }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 40 }}>
 
@@ -235,8 +236,8 @@ function HelpTab({ hasSupportMsg }) {
       {/* Get help with a trip */}
       <div>
         <SectionHeader title="Get help with a trip" seeAll paddingTop={36} />
-        <TripItem date="8 Mar, 11:45" destination="58 Mahtra Tänav" amount="3.60€" status="Finished" />
-        <TripItem date="8 Mar, 12:15" destination="Kotka Tänav 8" status="Passenger did not show" />
+        <TripItem date="8 Mar, 11:45" destination={country.hub.tripFrom} amount={country.money.spaced(country.hub.tripAmount)} status="Finished" />
+        <TripItem date="8 Mar, 12:15" destination={country.hub.tripTo} status="Passenger did not show" />
       </div>
 
       <SectionDivider />
@@ -271,6 +272,7 @@ function HelpTab({ hasSupportMsg }) {
 // ─── Main screen ──────────────────────────────────────────────────
 
 export default function BoltHubScreen({ goBack, hasTasks, hasSupportMsg, updatesBadge = 2 }) {
+  const country = useCountry()
   const [tab, setTab] = useState('inbox')
 
   return (
@@ -346,8 +348,8 @@ export default function BoltHubScreen({ goBack, hasTasks, hasSupportMsg, updates
           className="h-full"
           panelClassName="hide-scroll h-full overflow-y-auto"
           tabs={[
-            { id: 'inbox', content: <InboxTab hasTasks={hasTasks} /> },
-            { id: 'help', content: <HelpTab hasSupportMsg={hasSupportMsg} /> },
+            { id: 'inbox', content: <InboxTab hasTasks={hasTasks} country={country} /> },
+            { id: 'help', content: <HelpTab hasSupportMsg={hasSupportMsg} country={country} /> },
           ]}
         />
       </div>

@@ -21,6 +21,7 @@ import TierRewardsIcon from '../components/profile/TierRewardsIcon.jsx'
 import RewardsPanel from '../components/profile/RewardsPanel.jsx'
 import SlidingTabPanels from '../components/SlidingTabPanels.jsx'
 import profilePhoto from '../assets/profile/avatar.png'
+import { useCountry } from '../context/CountryContext.jsx'
 import { AT_RISK_ACTIONS, METRICS, PROFILE } from '../data/profile.js'
 
 /** Chart accent from Figma rating sparkline (warning amber) */
@@ -173,7 +174,10 @@ function AtRiskRow({ label, count, variant, separator }) {
   )
 }
 
-function PerformancePanel() {
+function PerformancePanel({ country }) {
+  const acceptedMetric = { ...METRICS.accepted, ...country.rates.accepted }
+  const cancelledMetric = { ...METRICS.cancelled, ...country.rates.cancelled }
+
   return (
     <div className="flex w-full flex-col items-center pb-8">
       <div className="flex w-full flex-col gap-2">
@@ -195,8 +199,8 @@ function PerformancePanel() {
         <div className="flex w-full flex-col gap-2 px-6">
           <StarRatingCard />
           <div className="flex w-full gap-2">
-            <CompactMetricCard metric={METRICS.accepted} />
-            <CompactMetricCard metric={METRICS.cancelled} />
+            <CompactMetricCard metric={acceptedMetric} />
+            <CompactMetricCard metric={cancelledMetric} />
           </div>
         </div>
       </div>
@@ -233,6 +237,7 @@ function PerformancePanel() {
 }
 
 export default function SidebarScreen({ goBack }) {
+  const country = useCountry()
   const [tab, setTab] = useState('performance')
 
   function handleSwitchProfile() {
@@ -302,7 +307,7 @@ export default function SidebarScreen({ goBack }) {
         className="min-h-0 flex-1"
         panelClassName="scroll-content h-full"
         tabs={[
-          { id: 'performance', content: <PerformancePanel /> },
+          { id: 'performance', content: <PerformancePanel country={country} /> },
           { id: 'rewards', content: <RewardsPanel /> },
         ]}
       />

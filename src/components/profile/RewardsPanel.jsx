@@ -1,5 +1,6 @@
 import { GhostButton } from '@ui'
 import { ChevronRight } from '@icons'
+import { useCountry } from '../../context/CountryContext.jsx'
 import benefitCommission from '../../assets/rewards/benefit-commission.png'
 import benefitMap from '../../assets/rewards/benefit-map.png'
 import partnerAutotah from '../../assets/rewards/partner-autotah.png'
@@ -13,7 +14,6 @@ import {
   REWARDS_PROGRESS_FILL_RATIO,
   REWARDS_TIER_COLORS,
   SILVER_BENEFITS,
-  TOP_DISCOUNTS,
 } from '../../data/rewards.js'
 import TierRewardsIcon from './TierRewardsIcon.jsx'
 
@@ -179,12 +179,16 @@ function BenefitCarousel({ benefits, backgroundColor }) {
 function DiscountCard({ name, discount, logo }) {
   return (
     <div className="flex shrink-0 flex-col items-center gap-1 rounded-[12px] bg-neutral-secondary px-4 py-2">
-      <img
-        alt=""
-        src={logo}
-        className="size-16 shrink-0 object-contain"
-        draggable={false}
-      />
+      {logo ? (
+        <img
+          alt=""
+          src={logo}
+          className="size-16 shrink-0 object-contain"
+          draggable={false}
+        />
+      ) : (
+        <div className="size-16 shrink-0" aria-hidden="true" />
+      )}
       <div className="flex flex-col items-center text-center">
         <span className="bolt-font-body-s text-secondary">{name}</span>
         <span className="bolt-font-heading-s-accent text-primary">{discount}</span>
@@ -194,6 +198,8 @@ function DiscountCard({ name, discount, logo }) {
 }
 
 export default function RewardsPanel() {
+  const country = useCountry()
+
   return (
     <div className="flex w-full flex-col pb-8">
       <ProgressSection />
@@ -213,7 +219,7 @@ export default function RewardsPanel() {
 
       <RewardsSectionHeader title="Top discounts" showViewAll />
       <div className="flex gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {TOP_DISCOUNTS.map((discount) => (
+        {country.rewardsPartners.map((discount) => (
           <DiscountCard
             key={discount.id}
             name={discount.name}

@@ -10,21 +10,20 @@
 
 import { useState } from 'react'
 import { IconBack, IconTrips, IconMap, IconHub, IconUser } from '../icons'
-
-const RIDES = [
-  { id: 1, from: 'Oranienburger Straße', to: 'Karl-Liebknecht-Str. 29', time: '10:14 AM', duration: '18 min', km: '4.2 km', amount: '€ 8.40', rating: 5, type: 'Comfort' },
-  { id: 2, from: 'Prenzlauer Berg', to: 'Berlin Mitte', time: '9:02 AM', duration: '14 min', km: '3.1 km', amount: '€ 6.20', rating: 5, type: 'Comfort' },
-  { id: 3, from: 'Friedrichshain', to: 'Kreuzberg', time: '8:11 AM', duration: '22 min', km: '5.4 km', amount: '€ 9.80', rating: 4, type: 'XL' },
-  { id: 4, from: 'Tempelhof', to: 'Neukölln', time: 'Yesterday 7:55 PM', duration: '11 min', km: '2.8 km', amount: '€ 5.60', rating: 5, type: 'Comfort' },
-  { id: 5, from: 'Charlottenburg', to: 'Tiergarten', time: 'Yesterday 6:40 PM', duration: '19 min', km: '5.1 km', amount: '€ 9.20', rating: 5, type: 'Comfort' },
-  { id: 6, from: 'Schöneberg', to: 'Steglitz', time: 'Yesterday 5:22 PM', duration: '24 min', km: '6.2 km', amount: '€ 11.50', rating: 5, type: 'XL' },
-  { id: 7, from: 'Berlin Brandenburg Airport', to: 'Mitte', time: 'Yesterday 3:10 PM', duration: '42 min', km: '29.4 km', amount: '€ 38.20', rating: 5, type: 'Comfort', highlight: true },
-]
+import { useCountry } from '../context/CountryContext.jsx'
 
 const FILTERS = ['All rides', 'Today', 'This week', 'Completed', 'Cancelled']
 
 export default function RidesScreen({ navigate, goBack }) {
+  const country = useCountry()
   const [activeFilter, setActiveFilter] = useState('All rides')
+
+  const rides = country.rides.list.map((ride) => ({ ...ride, amount: country.money.spaced(ride.amount) }))
+  const summary = [
+    { label: 'Rides', value: String(rides.length) },
+    { label: 'Earnings', value: country.money.spaced(country.rides.summaryEarnings) },
+    { label: 'Distance', value: country.rides.summaryDistance },
+  ]
 
   return (
     <div className="screen" style={{ background: '#fff', display: 'flex', flexDirection: 'column' }}>
@@ -73,11 +72,7 @@ export default function RidesScreen({ navigate, goBack }) {
         borderBottom: '1px solid #f3f4f6',
         flexShrink: 0,
       }}>
-        {[
-          { label: 'Rides', value: '7' },
-          { label: 'Earnings', value: '€ 42.50' },
-          { label: 'Distance', value: '56.2 km' },
-        ].map(({ label, value }, i) => (
+        {summary.map(({ label, value }, i) => (
           <div key={label} style={{
             flex: 1, padding: '10px 0', textAlign: 'center',
             borderLeft: i > 0 ? '1px solid #e5e7eb' : 'none',
@@ -95,7 +90,7 @@ export default function RidesScreen({ navigate, goBack }) {
 
       {/* Rides list */}
       <div className="scroll-content" style={{ paddingBottom: 80 }}>
-        {RIDES.map(({ id, from, to, time, km, amount, rating, type, highlight }) => (
+        {rides.map(({ id, from, to, time, km, amount, rating, type, highlight }) => (
           <div
             key={id}
             style={{

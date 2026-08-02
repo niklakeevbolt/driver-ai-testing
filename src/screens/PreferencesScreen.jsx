@@ -9,6 +9,7 @@ import {
   MoreAndroid,
   PinAlt,
 } from '@icons'
+import { useCountry } from '../context/CountryContext.jsx'
 
 const FF = { fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)' }
 
@@ -18,24 +19,7 @@ const SEPARATOR = 'rgba(0,45,30,0.07)'
 // showing through 8px gaps between rounded white sections.
 const GROUP_GAP = '#eef1f0'
 
-const SETTINGS = [
-  { id: 'vehicle', title: 'Vehicle', subtitle: '222 BAS • Nissan Leaf' },
-  { id: 'categories', title: 'Categories', subtitle: 'Bolt, Basic, Premium' },
-  { id: 'navigation', title: 'Navigation', subtitle: 'Google Maps' },
-]
-
-const DESTINATIONS = [
-  { id: 'home', title: 'Home', subtitle: 'Vana-Kalamaja 2, Tallinn', icon: Home, hasMenu: true },
-  { id: 'vana-louna', title: 'Vana-Lõuna 39', subtitle: 'Tallinn', icon: PinAlt, hasMenu: false },
-]
-
-const FILTER_CHIPS = [
-  { id: 'pickup', label: 'Pickup distance', value: '3 km' },
-  { id: 'price', label: 'Price per km', value: '2.8 €' },
-  { id: 'in-app', label: 'In-app', icon: Card },
-  { id: 'cash', label: 'Cash', icon: CashDriver },
-  { id: 'terminal', label: 'Card terminal', icon: Card },
-]
+const DESTINATION_ICONS = { home: Home, pin: PinAlt }
 
 function SettingRow({ title, subtitle, showSeparator }) {
   return (
@@ -159,7 +143,30 @@ function Toggle({ checked, onChange, label }) {
 }
 
 export default function PreferencesScreen({ goBack }) {
+  const country = useCountry()
   const [autoAccept, setAutoAccept] = useState(true)
+
+  const settings = [
+    { id: 'vehicle', title: 'Vehicle', subtitle: country.preferences.vehicle },
+    { id: 'categories', title: 'Categories', subtitle: 'Bolt, Basic, Premium' },
+    { id: 'navigation', title: 'Navigation', subtitle: 'Google Maps' },
+  ]
+
+  const destinations = country.preferences.destinations.map((item) => ({
+    id: item.id,
+    title: item.label,
+    subtitle: item.address ?? [item.addressLine1, item.addressLine2].filter(Boolean).join(', '),
+    icon: DESTINATION_ICONS[item.icon] ?? PinAlt,
+    hasMenu: item.id === 'home',
+  }))
+
+  const filterChips = [
+    { id: 'pickup', label: 'Pickup distance', value: '3 km' },
+    { id: 'price', label: 'Price per km', value: country.preferences.priceFilter },
+    { id: 'in-app', label: 'In-app', icon: Card },
+    { id: 'cash', label: 'Cash', icon: CashDriver },
+    { id: 'terminal', label: 'Card terminal', icon: Card },
+  ]
 
   return (
     <div className="screen" style={{ background: GROUP_GAP }}>
@@ -180,12 +187,12 @@ export default function PreferencesScreen({ goBack }) {
             </div>
           </div>
 
-          {SETTINGS.map((item, i) => (
+          {settings.map((item, i) => (
             <SettingRow
               key={item.id}
               title={item.title}
               subtitle={item.subtitle}
-              showSeparator={i < SETTINGS.length - 1}
+              showSeparator={i < settings.length - 1}
             />
           ))}
         </section>
@@ -199,14 +206,14 @@ export default function PreferencesScreen({ goBack }) {
             paddingTop={20}
             paddingBottom={4}
           />
-          {DESTINATIONS.map((item, i) => (
+          {destinations.map((item, i) => (
             <DestinationRow
               key={item.id}
               title={item.title}
               subtitle={item.subtitle}
               icon={item.icon}
               hasMenu={item.hasMenu}
-              showSeparator={i < DESTINATIONS.length - 1}
+              showSeparator={i < destinations.length - 1}
             />
           ))}
         </section>
@@ -229,7 +236,7 @@ export default function PreferencesScreen({ goBack }) {
           <SectionHeader title="Filters" action="Edit" paddingTop={12} paddingBottom={12} />
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 11, padding: '0 24px' }}>
-            {FILTER_CHIPS.map((chip) => (
+            {filterChips.map((chip) => (
               <FilterChip key={chip.id} label={chip.label} value={chip.value} icon={chip.icon} />
             ))}
           </div>
