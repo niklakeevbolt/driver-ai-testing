@@ -252,7 +252,8 @@ export const uk = {
       },
       {
         active: false,
-        label: sameDayWindow('06:00', '22:00'),
+        windowStart: '06:00',
+        windowEnd: '22:00',
         name: 'Heathrow Morning Quest',
         bonus: money.amount(90, { decimals: 0 }),
         target: 35,
@@ -278,8 +279,9 @@ export const uk = {
           },
           {
             active: false,
-            label: sameDayWindow('06:00', '22:00'),
-            name: 'Heathrow Morning Quest',
+        windowStart: '06:00',
+        windowEnd: '22:00',
+        name: 'Heathrow Morning Quest',
             bonus: money.amount(90, { decimals: 0 }),
             target: 35,
           },
@@ -299,7 +301,8 @@ export const uk = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('07:00', '22:00'),
+            windowStart: '07:00',
+            windowEnd: '22:00',
             name: 'City Commute Boost',
             bonus: money.amount(70, { decimals: 0 }),
             target: 30,
@@ -320,14 +323,16 @@ export const uk = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('00:00', '23:59'),
+            windowStart: '00:00',
+            windowEnd: '23:59',
             name: 'Midweek Guarantee',
             bonus: money.amount(120, { decimals: 0 }),
             target: 50,
           },
           {
             active: false,
-            label: sameDayWindow('17:00', '23:00'),
+            windowStart: '17:00',
+            windowEnd: '23:00',
             name: 'After-Work Shoreditch',
             bonus: money.amount(45, { decimals: 0 }),
             target: 20,
@@ -355,7 +360,7 @@ export const uk = {
       {
         campaigns: [
           {
-            active: true,
+            active: false,
             label: 'Active now, ends today 23:59',
             name: 'Weekend Kickoff',
             bonus: money.amount(75, { decimals: 0 }),
@@ -379,7 +384,8 @@ export const uk = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('10:00', '22:00'),
+            windowStart: '10:00',
+            windowEnd: '22:00',
             name: 'Sunday West End',
             bonus: money.amount(60, { decimals: 0 }),
             target: 22,

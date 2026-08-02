@@ -1,25 +1,64 @@
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-function padTime(t) {
-  return t
-}
-
-/** e.g. "2 Aug" */
+/** e.g. "Aug 2" */
 export function formatDay(date = new Date()) {
-  return `${date.getDate()} ${MONTHS[date.getMonth()]}`
+  return `${MONTHS[date.getMonth()]} ${date.getDate()}`
 }
 
-/** Same-calendar-day campaign window, e.g. "2 Aug, 06:00 – 2 Aug, 22:00" */
+export function addDays(date, days) {
+  const d = new Date(date)
+  d.setDate(d.getDate() + days)
+  return d
+}
+
+/** Next `count` calendar days starting today, for the Opportunities strip. */
+export function upcomingDays(count = 7, date = new Date()) {
+  return Array.from({ length: count }, (_, offset) => {
+    const d = addDays(date, offset)
+    return {
+      offset,
+      date: d,
+      label: formatDay(d),
+    }
+  })
+}
+
+/** Same-calendar-day campaign window, e.g. "Aug 2, 06:00 – Aug 2, 22:00" */
 export function sameDayWindow(start, end, date = new Date()) {
   const day = formatDay(date)
-  return `${day}, ${padTime(start)} – ${day}, ${padTime(end)}`
+  return `${day}, ${start} – ${day}, ${end}`
+}
+
+/**
+ * Bind campaigns to a calendar day.
+ * Today (offset 0) may keep active quests; future days are always inactive
+ * and labelled with that day's date window.
+ */
+export function resolveCampaignsForDay(campaigns, dayOffset, date = new Date()) {
+  const dayDate = addDays(date, dayOffset)
+  return campaigns.map((campaign) => {
+    const start = campaign.windowStart ?? '06:00'
+    const end = campaign.windowEnd ?? '22:00'
+    if (dayOffset > 0) {
+      return {
+        ...campaign,
+        active: false,
+        label: sameDayWindow(start, end, dayDate),
+        completed: undefined,
+        progress: undefined,
+      }
+    }
+    if (campaign.active) return campaign
+    return {
+      ...campaign,
+      label: sameDayWindow(start, end, dayDate),
+    }
+  })
 }
 
 /** Yesterday stamp for last-ride rows */
 export function yesterdayStamp(time = '12:24', date = new Date()) {
-  const d = new Date(date)
-  d.setDate(d.getDate() - 1)
-  return `${formatDay(d)}, ${time}`
+  return `${formatDay(addDays(date, -1))}, ${time}`
 }
 
 export function rewardsMonthTitle(date = new Date()) {
@@ -28,9 +67,7 @@ export function rewardsMonthTitle(date = new Date()) {
 
 /** Hub inbox / help dates relative to today */
 export function daysAgoStamp(daysAgo, date = new Date()) {
-  const d = new Date(date)
-  d.setDate(d.getDate() - daysAgo)
-  return formatDay(d)
+  return formatDay(addDays(date, -daysAgo))
 }
 
 export function todayTimeStamp(time, date = new Date()) {

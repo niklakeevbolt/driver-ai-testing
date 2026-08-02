@@ -253,7 +253,8 @@ export const southAfrica = {
       },
       {
         active: false,
-        label: sameDayWindow('05:00', '22:00'),
+        windowStart: '05:00',
+        windowEnd: '22:00',
         name: 'OR Tambo Airport Quest',
         bonus: money.amount(450, { decimals: 0 }),
         target: 30,
@@ -279,8 +280,9 @@ export const southAfrica = {
           },
           {
             active: false,
-            label: sameDayWindow('05:00', '22:00'),
-            name: 'OR Tambo Airport Quest',
+        windowStart: '05:00',
+        windowEnd: '22:00',
+        name: 'OR Tambo Airport Quest',
             bonus: money.amount(450, { decimals: 0 }),
             target: 30,
           },
@@ -300,7 +302,8 @@ export const southAfrica = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('06:00', '22:00'),
+            windowStart: '06:00',
+            windowEnd: '22:00',
             name: 'Morning Sandton Run',
             bonus: money.amount(320, { decimals: 0 }),
             target: 28,
@@ -321,14 +324,16 @@ export const southAfrica = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('00:00', '23:59'),
+            windowStart: '00:00',
+            windowEnd: '23:59',
             name: 'Midweek Guarantee',
             bonus: money.amount(550, { decimals: 0 }),
             target: 45,
           },
           {
             active: false,
-            label: sameDayWindow('16:00', '22:00'),
+            windowStart: '16:00',
+            windowEnd: '22:00',
             name: 'After-Work Rosebank',
             bonus: money.amount(220, { decimals: 0 }),
             target: 20,
@@ -356,7 +361,7 @@ export const southAfrica = {
       {
         campaigns: [
           {
-            active: true,
+            active: false,
             label: 'Active now, ends today 23:59',
             name: 'Weekend Kickoff',
             bonus: money.amount(380, { decimals: 0 }),
@@ -380,7 +385,8 @@ export const southAfrica = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('10:00', '22:00'),
+            windowStart: '10:00',
+            windowEnd: '22:00',
             name: 'Sunday Sandton',
             bonus: money.amount(250, { decimals: 0 }),
             target: 22,

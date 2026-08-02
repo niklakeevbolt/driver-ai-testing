@@ -252,7 +252,8 @@ export const romania = {
       },
       {
         active: false,
-        label: sameDayWindow('05:00', '22:00'),
+        windowStart: '05:00',
+        windowEnd: '22:00',
         name: 'Otopeni Airport Quest',
         bonus: money.amount(250, { decimals: 0 }),
         target: 30,
@@ -278,8 +279,9 @@ export const romania = {
           },
           {
             active: false,
-            label: sameDayWindow('05:00', '22:00'),
-            name: 'Otopeni Airport Quest',
+        windowStart: '05:00',
+        windowEnd: '22:00',
+        name: 'Otopeni Airport Quest',
             bonus: money.amount(250, { decimals: 0 }),
             target: 30,
           },
@@ -299,7 +301,8 @@ export const romania = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('07:00', '22:00'),
+            windowStart: '07:00',
+            windowEnd: '22:00',
             name: 'Dimineața în Pipera',
             bonus: money.amount(180, { decimals: 0 }),
             target: 28,
@@ -320,14 +323,16 @@ export const romania = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('00:00', '23:59'),
+            windowStart: '00:00',
+            windowEnd: '23:59',
             name: 'Bonus de mijloc de săptămână',
             bonus: money.amount(320, { decimals: 0 }),
             target: 45,
           },
           {
             active: false,
-            label: sameDayWindow('17:00', '23:00'),
+            windowStart: '17:00',
+            windowEnd: '23:00',
             name: 'Seara în Floreasca',
             bonus: money.amount(120, { decimals: 0 }),
             target: 20,
@@ -355,7 +360,7 @@ export const romania = {
       {
         campaigns: [
           {
-            active: true,
+            active: false,
             label: 'Active now, ends today 23:59',
             name: 'Weekend Kickoff',
             bonus: money.amount(200, { decimals: 0 }),
@@ -379,7 +384,8 @@ export const romania = {
         campaigns: [
           {
             active: false,
-            label: sameDayWindow('10:00', '22:00'),
+            windowStart: '10:00',
+            windowEnd: '22:00',
             name: 'Duminică în Centru',
             bonus: money.amount(140, { decimals: 0 }),
             target: 20,

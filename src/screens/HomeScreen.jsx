@@ -16,6 +16,7 @@ import {
 
 import { CarTopViewIllustration } from '../components/Illustrations.jsx'
 import { useCountry } from '../context/CountryContext.jsx'
+import { upcomingDays, resolveCampaignsForDay } from '../data/dates.js'
 import 'leaflet/dist/leaflet.css'
 import EarningsIsland from './EarningsIsland'
 
@@ -303,7 +304,7 @@ function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
   const country = useCountry()
   const title = preferencesVisited ? 'Steady demand in your area' : country.demand.peakOfferTitle
   const bars = preferencesVisited ? MEDIUM_DEMAND_BARS : DEMAND_BARS
-  const [campaignActive, campaignUpcoming] = country.campaigns.home
+  const [campaignActive, campaignUpcoming] = resolveCampaignsForDay(country.campaigns.home, 0)
   const scheduled = country.campaigns.scheduled
 
   return (
@@ -383,7 +384,7 @@ function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
 
 // ─── Opportunities overlay sheet ─────────────────────────────────
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const OPPS_DAYS = upcomingDays(7)
 
 const DEMAND_BY_DAY = [
   [10,7,5,4,4,5,7,12,22,38,52,62,70,76,72,68,60,55,52,50,48,54,62,72,80,90,95,86,74,67,60,62,66,74,84,90,96,98,92,82,70,58,46,36,28,20,14,9],
@@ -415,6 +416,7 @@ function XCircleIcon() {
 function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBarIdx, onBarIdx, oppsDay, onDayChange }) {
   const country = useCountry()
   const day = country.campaigns.dayContent[oppsDay]
+  const campaigns = resolveCampaignsForDay(day.campaigns, oppsDay)
 
   const tH = Math.max(0, CONTENT_STOP - sheetTop)
 
@@ -480,19 +482,19 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
             background: '#fff',
           }}>
             <div style={{ display: 'flex', gap: 8 }}>
-              {DAYS.map((d, i) => (
+              {OPPS_DAYS.map((d, i) => (
                 <button
-                  key={d}
+                  key={d.label}
                   onClick={() => onDayChange(i)}
                   style={{
                     flex: 1, height: 44, borderRadius: 12,
                     background: oppsDay === i ? '#0e1010' : 'rgba(73,93,122,0.08)',
-                    ...FF, fontSize: 14,
+                    ...FF, fontSize: 12,
                     fontWeight: oppsDay === i ? 600 : 400,
                     color: oppsDay === i ? '#fff' : '#2a313c',
                     letterSpacing: '-0.084px',
                   }}
-                >{d}</button>
+                >{d.label}</button>
               ))}
             </div>
           </div>
@@ -516,13 +518,13 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
             </div>
           ) : (
             <div style={{ marginBottom: 24 }}>
-              {day.campaigns.map((c, ci) => (
+              {campaigns.map((c, ci) => (
                 <CampaignCard
                   key={ci}
                   campaign={c}
                   style={{
                     padding: '16px 24px',
-                    marginBottom: ci < day.campaigns.length - 1 ? 8 : 0,
+                    marginBottom: ci < campaigns.length - 1 ? 8 : 0,
                   }}
                 />
               ))}
