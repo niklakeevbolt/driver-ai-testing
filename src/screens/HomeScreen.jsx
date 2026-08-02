@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { MapContainer, TileLayer, Polygon, Marker, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
@@ -372,7 +372,7 @@ function AirportChart() {
   )
 }
 
-function DefaultSheet({ onOppsOpen }) {
+function DefaultSheet({ onOppsOpen, chartRef }) {
   return (
     <div style={{ padding: '20px 20px 24px' }}>
 
@@ -383,7 +383,7 @@ function DefaultSheet({ onOppsOpen }) {
       <p style={{ ...FF, fontSize: 14, fontWeight: 600, color: '#808c9f', letterSpacing: '-0.084px', marginBottom: 12 }}>
         Peak ends in 2 hours 12 min.
       </p>
-      <div style={{ background: 'rgba(0,45,30,0.07)', borderRadius: 12, padding: '12px 14px 10px', marginBottom: 20 }}>
+      <div ref={chartRef} style={{ background: 'rgba(0,45,30,0.07)', borderRadius: 12, padding: '12px 14px 10px', marginBottom: 20 }}>
         <DemandChart highlightStart={null} highlightEnd={null} highlightColor={null} />
       </div>
 
@@ -683,7 +683,7 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
   )
 }
 
-function ZoneSheet({ zone, onClose }) {
+function ZoneSheet({ zone, onClose, chartRef }) {
   return (
     <div style={{ padding: '20px 24px 16px', position: 'relative' }}>
       <button
@@ -742,11 +742,13 @@ function ZoneSheet({ zone, onClose }) {
         }}>{zone.bonus} Surge</span>
       </div>
 
-      <DemandChart
-        highlightStart={zone.peakStart}
-        highlightEnd={zone.peakEnd}
-        highlightColor={zone.color}
-      />
+      <div ref={chartRef}>
+        <DemandChart
+          highlightStart={zone.peakStart}
+          highlightEnd={zone.peakEnd}
+          highlightColor={zone.color}
+        />
+      </div>
     </div>
   )
 }
@@ -833,23 +835,67 @@ const COLLAPSED_TOP = 628
 const FOOTER_H = 92
 // FAB row: top 44, height 48 → bottom 92. Content stops 24px below that.
 const CONTENT_STOP = 75
+// Breathing room under the demand chart in the collapsed state.
+const CHART_BOTTOM_GAP = 12
+// Never let the collapsed sheet swallow the map entirely on very short screens.
+const MIN_COLLAPSED_TOP = 160
 
 export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, isHubOpen, hasTasks, hubBadge = 2, onOpenMenu }) {
   const [isOnline, setIsOnline] = useState(false)
   const [selectedZone, setSelectedZone] = useState(null)
   const [earningsOpen, setEarningsOpen] = useState(false)
   const [oppsOpen, setOppsOpen] = useState(false)
-  const [sheetTop, setSheetTop] = useState(EXPANDED_TOP)
-  const [isDragging, setIsDragging] = useState(false)
   const [mapZoom, setMapZoom] = useState(OVERVIEW_ZOOM)
   const drag = useRef({ active: false, startY: 0, startTop: 0, currentTop: EXPANDED_TOP })
+  const screenRef = useRef(null)
   const sheetScrollRef = useRef(null)
+  const sheetHandleRef = useRef(null)
+  const chartRef = useRef(null)
   // Tracks a fullscreen content gesture until we know whether it's a scroll
   // or a pull-to-collapse at the top.
   const pullCollapse = useRef({ armed: false, startY: 0, startScrollTop: 0 })
+
+  // Snap points are named rather than fixed pixels so the collapsed height can
+  // be measured from real content and re-derived when the viewport changes.
+  const [snap, setSnap] = useState('expanded')
+  const [dragTop, setDragTop] = useState(null)
+  const [collapsedTop, setCollapsedTop] = useState(COLLAPSED_TOP)
+  // On short screens the measured collapsed point can rise above the default
+  // mid point; keep the ordering fullscreen ≤ expanded ≤ collapsed.
+  const expandedTop = Math.min(EXPANDED_TOP, collapsedTop)
+  const snapTops = { fullscreen: FULLSCREEN_TOP, expanded: expandedTop, collapsed: collapsedTop }
+
+  const isDragging = dragTop !== null
+  const sheetTop = isDragging ? dragTop : snapTops[snap]
   // Scroll is locked until the sheet is fully open — a swipe on a mid/collapsed
   // sheet expands it instead of scrolling content underneath.
   const isFullscreen = sheetTop <= FULLSCREEN_TOP + 10
+
+  // Size the collapsed state so the demand chart clears the footer on any
+  // screen. Measured relative to the scroller, so it holds mid-transition.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const screenEl = screenRef.current
+      const scroller = sheetScrollRef.current
+      const handleEl = sheetHandleRef.current
+      const chartEl = chartRef.current
+      if (!screenEl || !scroller || !handleEl || !chartEl) return
+      const chartBottom =
+        chartEl.getBoundingClientRect().bottom -
+        scroller.getBoundingClientRect().top +
+        scroller.scrollTop
+      const needed = handleEl.offsetHeight + chartBottom + CHART_BOTTOM_GAP
+      setCollapsedTop(
+        Math.max(MIN_COLLAPSED_TOP, Math.round(screenEl.clientHeight - FOOTER_H - needed)),
+      )
+    }
+
+    measure()
+    const observer = new ResizeObserver(measure)
+    if (screenRef.current) observer.observe(screenRef.current)
+    if (chartRef.current) observer.observe(chartRef.current)
+    return () => observer.disconnect()
+  }, [selectedZone])
 
   const [oppsSheetTop, setOppsSheetTop] = useState(1100)
   const [isOppsDragging, setIsOppsDragging] = useState(false)
@@ -869,28 +915,29 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
     setOppsOpen(false)
   }
 
-  const snapTo = (top) => {
-    if (top > FULLSCREEN_TOP + 10 && sheetScrollRef.current) {
+  const snapTo = (name) => {
+    if (name !== 'fullscreen' && sheetScrollRef.current) {
       sheetScrollRef.current.scrollTop = 0
     }
-    setSheetTop(top)
+    setSnap(name)
+    setDragTop(null)
   }
 
   const handleZoneSelect = (zone) => {
     const next = selectedZone?.id === zone.id ? null : zone
     setSelectedZone(next)
-    snapTo(next ? COLLAPSED_TOP : EXPANDED_TOP)
+    snapTo(next ? 'collapsed' : 'expanded')
   }
 
   const handleDeselect = () => {
     setSelectedZone(null)
-    snapTo(EXPANDED_TOP)
+    snapTo('expanded')
   }
 
   const onDragStart = (e) => {
     const y = e.touches?.[0]?.clientY ?? e.clientY
     drag.current = { active: true, startY: y, startTop: sheetTop, currentTop: sheetTop }
-    setIsDragging(true)
+    setDragTop(sheetTop)
   }
 
   const onSheetBodyDragStart = (e) => {
@@ -925,7 +972,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
         currentTop: FULLSCREEN_TOP,
       }
       if (sheetScrollRef.current) sheetScrollRef.current.scrollTop = 0
-      setIsDragging(true)
+      setDragTop(FULLSCREEN_TOP)
       return true
     }
     // Moved up or enough that this is a normal scroll — stop watching.
@@ -939,9 +986,9 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
       maybeBeginPullCollapse(y, sheetScrollRef.current?.scrollTop ?? 0)
       if (!drag.current.active) return
     }
-    const next = Math.max(FULLSCREEN_TOP, Math.min(COLLAPSED_TOP, drag.current.startTop + (y - drag.current.startY)))
+    const next = Math.max(FULLSCREEN_TOP, Math.min(collapsedTop, drag.current.startTop + (y - drag.current.startY)))
     drag.current.currentTop = next
-    setSheetTop(next)
+    setDragTop(next)
   }
 
   const onDragEnd = () => {
@@ -950,30 +997,30 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
     const startTop = drag.current.startTop
     const currentTop = drag.current.currentTop
     drag.current.active = false
-    setIsDragging(false)
+
+    const dy = currentTop - startTop
+    const midpoint = (expandedTop + collapsedTop) / 2
 
     // From mid/collapsed, an upward swipe always opens fullscreen first —
     // content scroll is locked until that state. Downward keeps the usual
     // expanded ↔ collapsed snap.
     if (startTop > FULLSCREEN_TOP + 10) {
-      const dy = currentTop - startTop
       if (dy < -24) {
-        snapTo(FULLSCREEN_TOP)
-      } else if (dy > 24 || currentTop >= (EXPANDED_TOP + COLLAPSED_TOP) / 2) {
-        snapTo(COLLAPSED_TOP)
+        snapTo('fullscreen')
+      } else if (dy > 24 || currentTop >= midpoint) {
+        snapTo('collapsed')
       } else {
-        snapTo(EXPANDED_TOP)
+        snapTo('expanded')
       }
       return
     }
 
     // From fullscreen: any meaningful pull down returns to the initial
     // (expanded) state; pull further to reach the collapsed peek.
-    const dy = currentTop - startTop
     if (dy > 24) {
-      snapTo(currentTop >= (EXPANDED_TOP + COLLAPSED_TOP) / 2 ? COLLAPSED_TOP : EXPANDED_TOP)
+      snapTo(currentTop >= midpoint ? 'collapsed' : 'expanded')
     } else {
-      snapTo(FULLSCREEN_TOP)
+      snapTo('fullscreen')
     }
   }
 
@@ -1061,6 +1108,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
 
   return (
     <div
+      ref={screenRef}
       className="screen"
       style={{ background: '#e9eaee' }}
       onMouseMove={(e) => oppsDrag.current.active ? onOppsDragMove(e) : onDragMove(e)}
@@ -1206,6 +1254,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
         zIndex: 5,
       }}>
         <div
+          ref={sheetHandleRef}
           style={{ flexShrink: 0, padding: '10px 0 4px', cursor: isDragging ? 'grabbing' : 'grab', userSelect: 'none' }}
           onMouseDown={onDragStart}
           onTouchStart={onDragStart}
@@ -1236,8 +1285,8 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
           onTouchStart={isFullscreen ? undefined : onSheetBodyDragStart}
         >
           {selectedZone
-            ? <ZoneSheet zone={selectedZone} onClose={handleDeselect} />
-            : <DefaultSheet onOppsOpen={openOpps} />
+            ? <ZoneSheet zone={selectedZone} onClose={handleDeselect} chartRef={chartRef} />
+            : <DefaultSheet onOppsOpen={openOpps} chartRef={chartRef} />
           }
         </div>
       </div>
