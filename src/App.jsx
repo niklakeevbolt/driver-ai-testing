@@ -4,6 +4,7 @@ import HomeScreen from './screens/HomeScreen'
 import SidebarScreen from './screens/SidebarScreen'
 import BoltHubScreen from './screens/BoltHubScreen'
 import NavigationScreen from './screens/NavigationScreen'
+import PreferencesScreen from './screens/PreferencesScreen'
 import EarningsScreen from './screens/EarningsScreen'
 import RidesScreen from './screens/RidesScreen'
 import SafetyScreen from './screens/SafetyScreen'
@@ -17,6 +18,7 @@ import './App.css'
 const SCREENS = {
   home: HomeScreen,
   navigation: NavigationScreen,
+  preferences: PreferencesScreen,
   earnings: EarningsScreen,
   rides: RidesScreen,
   safety: SafetyScreen,

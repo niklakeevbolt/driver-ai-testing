@@ -4,9 +4,9 @@ import { MapContainer, TileLayer, Polygon, Marker, useMap, useMapEvents } from '
 import L from 'leaflet'
 import {
   Calendar,
-  Burger,
   ChevronRight,
   Clear,
+  Filters,
   Inbox,
   Route,
   Surge,
@@ -842,7 +842,8 @@ function DemandChart({ highlightStart, highlightEnd, highlightColor, neutral = f
 const FULLSCREEN_TOP = 0
 const EXPANDED_TOP = 450
 const COLLAPSED_TOP = 628
-const FOOTER_H = 92
+// Sticky area: 20px padding + 72px buttons + 20px padding.
+const FOOTER_H = 112
 // FAB row: top 44, height 48 → bottom 92. Content stops 24px below that.
 const CONTENT_STOP = 75
 // Breathing room under the demand chart in the collapsed state.
@@ -850,8 +851,7 @@ const CHART_BOTTOM_GAP = 12
 // Never let the collapsed sheet swallow the map entirely on very short screens.
 const MIN_COLLAPSED_TOP = 160
 
-export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, isHubOpen, hasTasks, hubBadge = 2, onOpenMenu }) {
-  const [isOnline, setIsOnline] = useState(false)
+export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, isHubOpen, hasTasks, hubBadge = 2 }) {
   const [selectedZone, setSelectedZone] = useState(null)
   const [earningsOpen, setEarningsOpen] = useState(false)
   const [oppsOpen, setOppsOpen] = useState(false)
@@ -1314,30 +1314,29 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
         onDayChange={setOppsDay}
       />
 
-      {/* Footer */}
+      {/* Sticky area (Figma 441:21128) */}
       <div style={{
         position: 'absolute',
         bottom: 0, left: 0, right: 0,
-        padding: '0 24px 20px',
+        padding: '20px 24px',
         display: 'flex', alignItems: 'center', gap: 12,
         zIndex: 20,
-        background: '#fff',
+        background: 'linear-gradient(to top, #fff 80%, rgba(255,255,255,0) 100%)',
       }}>
         <button
           style={{
             flex: 1, height: 72, borderRadius: 100,
-            background: isOnline ? '#000' : '#c5c5c5',
+            background: '#000',
             color: '#fff',
             fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)',
             fontSize: 24, fontWeight: 600,
             letterSpacing: '-0.48px', lineHeight: '30px',
-            transition: 'background 0.2s',
           }}
-          onClick={() => setIsOnline(v => !v)}
         >
-          {isOnline ? 'Go offline' : 'Go online'}
+          Go online
         </button>
         <button
+          aria-label="Preferences"
           style={{
             width: 72, height: 72, borderRadius: 100,
             background: '#fff',
@@ -1345,9 +1344,10 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
           }}
-          onClick={() => onOpenMenu?.()}
+          onClick={() => navigate('preferences')}
         >
-          <Burger size="xl" style={{ color: 'var(--content-primary)' }} />
+          {/* Figma sizes this glyph 32px, between Kalep's lg (24) and xl (36). */}
+          <Filters size="lg" width={32} height={32} style={{ color: 'var(--content-primary)' }} />
         </button>
       </div>
     </div>
