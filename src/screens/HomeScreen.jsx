@@ -252,7 +252,7 @@ function AnimatedSurgeLayer({ zone, visible, selected, onSelect, small, heatmapA
       if (!wrap) return
       wrap.style.opacity = visible ? '1' : '0'
       wrap.style.transform = visible ? 'scale(1)' : 'scale(0.82)'
-      icon.style.pointerEvents = visible ? '' : 'none'
+      icon.style.pointerEvents = 'none'
     })
     return () => cancelAnimationFrame(raf)
   }, [visible, heatmapActivity, map, zone.id])
@@ -269,7 +269,7 @@ function AnimatedSurgeLayer({ zone, visible, selected, onSelect, small, heatmapA
   )
   const pillIcon = useMemo(() => L.divIcon({
     className: '',
-    html: `<div class="spw" data-zone="${zone.id}" style="opacity:0;transform:scale(0.82);transition:opacity 0.32s ease-out,transform 0.32s cubic-bezier(0.34,1.08,0.64,1);transform-origin:bottom center;pointer-events:none;"><div style="background:${zone.color};color:#fff;padding:${padding};border-radius:20px;font-family:var(--font-sans);font-size:${fs}px;font-weight:700;letter-spacing:-0.1px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.22);display:flex;align-items:center;gap:5px;cursor:pointer;">${surgeMarkup}${zone.bonus}</div></div>`,
+    html: `<div class="spw" data-zone="${zone.id}" style="opacity:0;transform:scale(0.82);transition:opacity 0.32s ease-out,transform 0.32s cubic-bezier(0.34,1.08,0.64,1);transform-origin:bottom center;pointer-events:none;"><div style="background:${zone.color};color:#fff;padding:${padding};border-radius:20px;font-family:var(--font-sans);font-size:${fs}px;font-weight:700;letter-spacing:-0.1px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.22);display:flex;align-items:center;gap:5px;pointer-events:none;">${surgeMarkup}${zone.bonus}</div></div>`,
     iconSize: null,
     iconAnchor: [anchor, 16],
   }), [zone.color, zone.bonus, padding, fs, surgeMarkup, anchor])
@@ -292,18 +292,18 @@ function AnimatedSurgeLayer({ zone, visible, selected, onSelect, small, heatmapA
     <>
       <Polygon
         positions={zone.polygon}
+        interactive={false}
         pathOptions={{
           className: 'surge-blur',
           stroke: false,
           fillColor: zone.fillColor,
           fillOpacity: visible ? (selected ? 0.80 : 0.58) : 0,
         }}
-        eventHandlers={{ click: (e) => { L.DomEvent.stop(e); if (visible) onSelect() } }}
       />
       <Marker
         position={zone.center}
         icon={pillIcon}
-        eventHandlers={{ click: (e) => { L.DomEvent.stop(e); if (visible) onSelect() } }}
+        interactive={false}
       />
     </>
   )
@@ -379,7 +379,7 @@ function AirportChart() {
 }
 
 function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
-  const title = preferencesVisited ? 'Medium demand in your area' : 'Earn +3€ per offer'
+  const title = preferencesVisited ? 'Steady demand in your area' : 'Earn +3€ per offer'
   const bars = preferencesVisited ? MEDIUM_DEMAND_BARS : DEMAND_BARS
 
   return (

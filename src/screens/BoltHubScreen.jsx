@@ -259,7 +259,7 @@ function HelpTab({ hasSupportMsg }) {
           style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingLeft: 24, paddingRight: 24, paddingTop: 12, paddingBottom: 4 }}
         >
           <DriverGuideCard title="Essentials" icon={Lightbulb}     />
-          <DriverGuideCard title="Safety"     icon={SafetyShield}  />
+          <DriverGuideCard title="Cancellation fees" icon={SafetyShield} />
           <DriverGuideCard title="Bolt Send"  icon={Package}       />
         </div>
       </div>

@@ -81,7 +81,7 @@ await sleep(9000)
 
 const probe = `(() => {
   const title = Array.from(document.querySelectorAll('p')).find((p) =>
-    p.textContent.includes('Earn +3') || p.textContent.includes('Medium demand') || p.textContent.includes('Demand is'))
+    p.textContent.includes('Earn +3') || p.textContent.includes('Steady demand') || p.textContent.includes('Medium demand') || p.textContent.includes('Demand is'))
   const surgePills = Array.from(document.querySelectorAll('.spw')).map((el) => ({
     zone: el.getAttribute('data-zone'),
     text: el.textContent.trim(),
@@ -113,7 +113,7 @@ console.log('after:', JSON.stringify(after, null, 2))
 
 const results = {
   'initial title': before.title === 'Earn +3€ per offer',
-  'after title': after.title === 'Medium demand in your area',
+  'after title': after.title === 'Steady demand in your area',
   'initial has mitte': before.visiblePills.some((p) => p.startsWith('mitte:')),
   'after no mitte': !after.visiblePills.some((p) => p.startsWith('mitte:')),
   'after still has other zones': after.visiblePills.some((p) => p.startsWith('friedrichshain:') || p.startsWith('kreuzberg:')),
