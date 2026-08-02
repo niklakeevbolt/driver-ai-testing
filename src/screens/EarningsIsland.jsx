@@ -1,23 +1,24 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { ChevronRight, Clear, Hide } from '@icons'
+import imgCalendar from '../assets/earnings/calendar-clock.png'
+import imgBankCard from '../assets/earnings/bank-card.png'
+import imgGoalTrack from '../assets/earnings/goal-ring-track.svg'
+import imgGoalProgress from '../assets/earnings/goal-ring-progress.svg'
+import imgDiamond from '../assets/earnings/rewards-diamond.svg'
+import imgRouteDot from '../assets/earnings/route-dot.svg'
+import imgRouteStart from '../assets/earnings/route-marker-start.svg'
+import imgRouteLine from '../assets/earnings/route-line.svg'
+import imgRouteEnd from '../assets/earnings/route-marker-end.svg'
 
 const FF = { fontFamily: 'var(--font-sans)', fontFeatureSettings: 'var(--ffs)' }
 const ELEV2 = '0px 4px 12px rgba(0,0,0,0.2)'
 const NEUT  = 'rgba(0,45,30,0.07)'
 
-// Figma assets — main card
-const imgCalendar    = 'https://www.figma.com/api/mcp/asset/42adfccb-c5a7-42c6-9085-82c032f73849'
-const imgBankCard    = 'https://www.figma.com/api/mcp/asset/00d18d70-b737-4f12-8b35-27c1ee4346fc'
-const imgGoalOuter   = 'https://www.figma.com/api/mcp/asset/b4078f6f-9681-49b4-bfce-d52c9e916ef1'
-const imgGoalInner   = 'https://www.figma.com/api/mcp/asset/9692ff52-a93d-4db9-9efb-231a956332e7'
-const imgBoltDiamond = 'https://www.figma.com/api/mcp/asset/854ed42c-f153-4fec-8f78-a257f12a0117'
-const imgPointsDmd   = 'https://www.figma.com/api/mcp/asset/05a573ef-c08d-4546-979f-dd5b9f452b71'
-const imgProgressBar = 'https://www.figma.com/api/mcp/asset/432348ae-79cb-4a11-b516-2b312a670c64'
-// Figma assets — route markers (node 623:42609)
-const imgRouteDot    = 'https://www.figma.com/api/mcp/asset/5199c933-80e6-4ead-82bb-2307d3b667c6'
-const imgRouteStart  = 'https://www.figma.com/api/mcp/asset/a9add864-0f98-496a-bc23-60e8dfd2c26e'
-const imgRouteLine   = 'https://www.figma.com/api/mcp/asset/8e37bd14-ea59-4147-a606-5144a9f1cf5a'
-const imgRouteEnd    = 'https://www.figma.com/api/mcp/asset/91a9241c-1e66-486c-9501-4c3b77297e8c'
+// Rewards progress, from Figma node 1873:43311. Two rectangles rather than an
+// exported asset so the fill keeps its 4px cap at any card width.
+const PROGRESS_TRACK = '#e1e5ea'
+const PROGRESS_FILL  = '#191f1c'
+const PROGRESS_PCT   = 147 / 327
 
 // geometry
 const SW  = 369
@@ -231,10 +232,10 @@ export default function EarningsIsland({ onOpenChange }) {
           }}>
             <div style={{ position: 'relative', width: 39, height: 39, flexShrink: 0 }}>
               <div style={{ position: 'absolute', top: '-12.82%', left: '-12.82%', right: '-12.82%', bottom: '-12.82%' }}>
-                <img src={imgGoalOuter} alt="" style={{ width: '100%', height: '100%' }} />
+                <img src={imgGoalTrack} alt="" style={{ width: '100%', height: '100%' }} />
               </div>
               <div style={{ position: 'absolute', top: '-12.82%', left: '14.28%', right: '-12.82%', bottom: '-12.82%' }}>
-                <img src={imgGoalInner} alt="" style={{ width: '100%', height: '100%' }} />
+                <img src={imgGoalProgress} alt="" style={{ width: '100%', height: '100%' }} />
               </div>
               <p style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', ...FF, fontSize: 16, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.176px', lineHeight: '24px', whiteSpace: 'nowrap' }}>
                 73<span style={{ fontSize: 11, fontWeight: 400, letterSpacing: '0.88px', textTransform: 'uppercase' }}>%</span>
@@ -278,7 +279,7 @@ export default function EarningsIsland({ onOpenChange }) {
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>15</span>
-            <img src={imgPointsDmd} alt="" style={{ width: 16, height: 16, display: 'block' }} />
+            <img src={imgDiamond} alt="" style={{ width: 16, height: 16, display: 'block' }} />
           </div>
         </div>
 
@@ -389,7 +390,7 @@ export default function EarningsIsland({ onOpenChange }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <img src={imgBoltDiamond} alt="" style={{ width: 20, height: 20, display: 'block' }} />
+            <img src={imgDiamond} alt="" style={{ width: 20, height: 20, display: 'block' }} />
             <span style={{ ...FF, fontSize: 24, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.48px', lineHeight: '30px' }}>13910</span>
           </div>
           <p style={{ ...FF, fontSize: 16, fontWeight: 400, color: '#191f1c', letterSpacing: '-0.176px', lineHeight: '24px' }}>
@@ -397,13 +398,15 @@ export default function EarningsIsland({ onOpenChange }) {
           </p>
         </div>
 
-        {/* Progress bar — always at top:78; overflow:hidden clips the 4px transparent
-            bottom of the asset in collapsed state, keeping the bar flush with the edge */}
+        {/* Progress bar — always at top:78, flush with the card edges */}
         <div style={{
-          position: 'absolute', left: 0, right: 0, height: 12,
-          top: 78,
+          position: 'absolute', left: 0, right: 0, height: 8,
+          top: 78, background: PROGRESS_TRACK,
         }}>
-          <img src={imgProgressBar} alt="" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{
+            width: `${PROGRESS_PCT * 100}%`, height: '100%',
+            background: PROGRESS_FILL, borderRadius: '0 4px 4px 0',
+          }} />
         </div>
 
         {/* Expanded detail — fades in as height grows past 86px */}
