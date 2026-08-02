@@ -1,9 +1,7 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { ChevronRight, Clear, Hide } from '@icons'
 import imgCalendar from '../assets/earnings/calendar-clock.png'
 import imgBankCard from '../assets/earnings/bank-card.png'
-import imgGoalTrack from '../assets/earnings/goal-ring-track.svg'
-import imgGoalProgress from '../assets/earnings/goal-ring-progress.svg'
 import imgDiamond from '../assets/earnings/rewards-diamond.svg'
 import imgRouteDot from '../assets/earnings/route-dot.svg'
 import imgRouteStart from '../assets/earnings/route-marker-start.svg'
@@ -20,17 +18,36 @@ const PROGRESS_TRACK = '#e1e5ea'
 const PROGRESS_FILL  = '#191f1c'
 const PROGRESS_PCT   = 147 / 327
 
-// geometry
-const SW  = 369
+// geometry — horizontal inset is fixed; card width tracks the phone screen so
+// left and right margins stay equal on any device width.
 const TOP = 44
-const PL  = Math.round((SW - 113) / 2)  // 128
+const CL  = 24
 const PW  = 113, PH = 48
-const CL  = 24, CW = SW - CL * 2, CH = 286  // 321 × 286
-
-const MAIN_H_FULL = CH        // 286 — all sub-cards collapsed
-const MAIN_H_COMPACT = 82    // when any sub-card is expanded (shows just amount+today header)
+const PAD = 16
+const MAIN_H_FULL = 206      // header + weekly/balance tiles + bottom pad (no weekly goal)
+const MAIN_H_COMPACT = 82    // when any sub-card is expanded (amount + Today only)
+const CH = MAIN_H_FULL
 const LR_H_COL = 78,  LR_H_EXP = 228
 const BR_H_COL = 86,  BR_H_EXP = 198
+
+function useHostWidth() {
+  const ref = useRef(null)
+  const [width, setWidth] = useState(375)
+
+  useLayoutEffect(() => {
+    const node = ref.current
+    if (!node) return undefined
+    const host = node.offsetParent || node.parentElement
+    if (!host) return undefined
+    const update = () => setWidth(host.clientWidth)
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(host)
+    return () => observer.disconnect()
+  })
+
+  return [ref, width]
+}
 
 const SPRING  = 'left 0.3s cubic-bezier(0.34,1.08,0.64,1), width 0.3s cubic-bezier(0.34,1.08,0.64,1), height 0.3s cubic-bezier(0.34,1.08,0.64,1)'
 const EASE_IN = 'left 0.22s cubic-bezier(0.4,0,1,1), width 0.22s cubic-bezier(0.4,0,1,1), height 0.22s cubic-bezier(0.4,0,1,1)'
@@ -56,6 +73,10 @@ export default function EarningsIsland({ onOpenChange }) {
   const [subCard, setSubCard]     = useState(null)
   const closeTimer = useRef(null)
   const cardsTimer = useRef(null)
+  const [hostRef, screenW] = useHostWidth()
+  const CW = Math.max(0, screenW - CL * 2)
+  const PL = Math.round((screenW - PW) / 2)
+  const innerW = Math.max(0, CW - PAD * 2)
 
   useEffect(() => () => {
     clearTimeout(closeTimer.current)
@@ -92,6 +113,7 @@ export default function EarningsIsland({ onOpenChange }) {
   if (phase === 'closed') {
     return (
       <button
+        ref={hostRef}
         onClick={open}
         style={{
           position: 'absolute', top: TOP, left: PL,
@@ -144,6 +166,7 @@ export default function EarningsIsland({ onOpenChange }) {
 
       {/* ── Morphing main card ───────────────────────────────── */}
       <div
+        ref={hostRef}
         onClick={subCard !== null ? () => setSubCard(null) : undefined}
         style={{
           position: 'absolute', top: TOP, left, width, height,
@@ -199,7 +222,7 @@ export default function EarningsIsland({ onOpenChange }) {
           }}>
             Today
           </p>
-          <div style={{ position: 'absolute', top: 82, left: 16, width: 296, display: 'flex', gap: 8 }}>
+          <div style={{ position: 'absolute', top: 82, left: PAD, width: innerW, display: 'flex', gap: 8 }}>
             <div style={{ flex: 1, height: 108, background: NEUT, borderRadius: 16, padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ width: 40, height: 35, flexShrink: 0, overflow: 'hidden' }}>
                 <img src={imgCalendar} alt="" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -223,31 +246,6 @@ export default function EarningsIsland({ onOpenChange }) {
                   <ChevronIcon />
                 </div>
               </div>
-            </div>
-          </div>
-          <div style={{
-            position: 'absolute', top: 198, left: 16, width: 296, height: 72,
-            background: NEUT, borderRadius: 16,
-            display: 'flex', alignItems: 'center', padding: '12px 12px 12px 16px', gap: 16,
-          }}>
-            <div style={{ position: 'relative', width: 39, height: 39, flexShrink: 0 }}>
-              <div style={{ position: 'absolute', top: '-12.82%', left: '-12.82%', right: '-12.82%', bottom: '-12.82%' }}>
-                <img src={imgGoalTrack} alt="" style={{ width: '100%', height: '100%' }} />
-              </div>
-              <div style={{ position: 'absolute', top: '-12.82%', left: '14.28%', right: '-12.82%', bottom: '-12.82%' }}>
-                <img src={imgGoalProgress} alt="" style={{ width: '100%', height: '100%' }} />
-              </div>
-              <p style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', ...FF, fontSize: 16, fontWeight: 600, color: '#2a313c', letterSpacing: '-0.176px', lineHeight: '24px', whiteSpace: 'nowrap' }}>
-                73<span style={{ fontSize: 11, fontWeight: 400, letterSpacing: '0.88px', textTransform: 'uppercase' }}>%</span>
-              </p>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ ...FF, fontSize: 16, fontWeight: 700, color: '#2a313c', letterSpacing: '-0.176px', lineHeight: '24px' }}>
-                Weekly goal: <span style={{ fontWeight: 600 }}>700€</span>
-              </p>
-              <p style={{ ...FF, fontSize: 16, fontWeight: 700, color: '#2a313c', letterSpacing: '-0.176px', lineHeight: '24px' }}>
-                You're almost there!
-              </p>
             </div>
           </div>
         </div>
@@ -418,7 +416,7 @@ export default function EarningsIsland({ onOpenChange }) {
         }}>
           {/* "Earn more" text — top:98 in card → top:8 inside this div */}
           <p style={{
-            position: 'absolute', top: 8, left: 16, width: 295,
+            position: 'absolute', top: 8, left: PAD, right: PAD,
             ...FF, fontSize: 16, fontWeight: 400, color: 'rgba(0,10,7,0.63)',
             letterSpacing: '-0.176px', lineHeight: '24px',
           }}>
@@ -427,8 +425,8 @@ export default function EarningsIsland({ onOpenChange }) {
 
           {/* "Open Bolt Rewards" button — top:138 in card → top:48 inside this div */}
           <button style={{
-            position: 'absolute', top: 48, left: '50%', transform: 'translateX(-50%)',
-            width: 303, height: 48, borderRadius: 9600,
+            position: 'absolute', top: 48, left: PAD, right: PAD,
+            height: 48, borderRadius: 9600,
             background: NEUT,
             ...FF, fontSize: 16, fontWeight: 600, color: '#191f1c', letterSpacing: '-0.176px',
           }}>
