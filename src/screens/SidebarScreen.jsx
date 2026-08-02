@@ -3,7 +3,6 @@ import {
   Alert,
   Badge,
   GhostButton,
-  IconButton,
   ListItemLayout,
   Tabs,
   TypographyStack,
@@ -244,23 +243,12 @@ export default function SidebarScreen({ goBack }) {
     <div className="screen flex flex-col overflow-hidden bg-layer-floor-1">
       <div className="relative h-[213px] w-full shrink-0">
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-          <IconButton
-            icon={<Clear size="lg" />}
-            variant="floating"
-            size="md"
-            shape="round"
-            aria-label="Close profile"
-            onClick={goBack}
-            className="shadow-[0px_4px_6px_rgba(0,0,0,0.2)]"
-          />
-          <IconButton
-            icon={<Settings size="lg" />}
-            variant="floating"
-            size="md"
-            shape="round"
-            aria-label="Profile settings"
-            className="shadow-[0px_4px_6px_rgba(0,0,0,0.2)]"
-          />
+          <button type="button" className="fab" aria-label="Close profile" onClick={goBack}>
+            <Clear size="lg" style={{ color: 'var(--content-primary)' }} />
+          </button>
+          <button type="button" className="fab" aria-label="Profile settings">
+            <Settings size="lg" style={{ color: 'var(--content-primary)' }} />
+          </button>
         </div>
 
         <div className="absolute left-1/2 top-4 size-[68px] -translate-x-1/2 overflow-hidden rounded-full">
