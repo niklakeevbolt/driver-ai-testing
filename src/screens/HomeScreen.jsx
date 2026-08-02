@@ -562,7 +562,7 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
         <div style={{ padding: '4px 24px 24px' }}>
 
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <p style={{ ...FF, fontSize: 32, fontWeight: 400, color: '#191f1c', letterSpacing: '-0.704px', lineHeight: '40px' }}>
               Opportunities
             </p>
@@ -571,22 +571,33 @@ function OpportunitiesSheet({ sheetTop, isDragging, onDragStart, onClose, oppsBa
             </button>
           </div>
 
-          {/* Day strip */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
-            {DAYS.map((d, i) => (
-              <button
-                key={d}
-                onClick={() => onDayChange(i)}
-                style={{
-                  flex: 1, height: 44, borderRadius: 12,
-                  background: oppsDay === i ? '#0e1010' : 'rgba(73,93,122,0.08)',
-                  ...FF, fontSize: 14,
-                  fontWeight: oppsDay === i ? 600 : 400,
-                  color: oppsDay === i ? '#fff' : '#2a313c',
-                  letterSpacing: '-0.084px',
-                }}
-              >{d}</button>
-            ))}
+          {/* Day strip — pins to the top of the scroller, which sits just below
+              the FAB row when the sheet is fullscreen. Negative margins let the
+              opaque backing span the full width while keeping content aligned. */}
+          <div style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            margin: '0 -24px 24px',
+            padding: '8px 24px 12px',
+            background: '#fff',
+          }}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {DAYS.map((d, i) => (
+                <button
+                  key={d}
+                  onClick={() => onDayChange(i)}
+                  style={{
+                    flex: 1, height: 44, borderRadius: 12,
+                    background: oppsDay === i ? '#0e1010' : 'rgba(73,93,122,0.08)',
+                    ...FF, fontSize: 14,
+                    fontWeight: oppsDay === i ? 600 : 400,
+                    color: oppsDay === i ? '#fff' : '#2a313c',
+                    letterSpacing: '-0.084px',
+                  }}
+                >{d}</button>
+              ))}
+            </div>
           </div>
 
           {/* Demand forecast */}
