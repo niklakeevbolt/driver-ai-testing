@@ -42,6 +42,8 @@ export default function App() {
   const [, setHistory] = useState([])
   const [scenario, setScenario] = useState('none')
   const [menuOpen, setMenuOpen] = useState(false)
+  // Survives HomeScreen remount when leaving Preferences.
+  const [preferencesVisited, setPreferencesVisited] = useState(false)
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_QUERY).matches)
 
   const hasTasks = scenario === 'tasks'
@@ -143,12 +145,13 @@ export default function App() {
   const goBack = useCallback(() => {
     if (sidebarPhase !== 'closed') { closeSidebar(); return }
     if (hubPhase !== 'closed') { closeHub(); return }
+    if (screen === 'preferences') setPreferencesVisited(true)
     setHistory((history) => {
       const prev = history[history.length - 1] ?? 'home'
       setScreen(prev)
       return history.slice(0, -1)
     })
-  }, [sidebarPhase, hubPhase, closeSidebar, closeHub])
+  }, [screen, sidebarPhase, hubPhase, closeSidebar, closeHub])
 
   const CurrentScreen = SCREENS[screen] ?? HomeScreen
   const isDark = DARK_SCREENS.has(screen)
@@ -184,6 +187,7 @@ export default function App() {
     isHubOpen: hubPhase !== 'closed',
     hasTasks,
     hubBadge,
+    preferencesVisited,
     onOpenMenu: () => setMenuOpen(true),
   }
 

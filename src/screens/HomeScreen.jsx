@@ -29,6 +29,7 @@ L.Icon.Default.mergeOptions({
 })
 
 const BERLIN_CENTER = [52.515, 13.405]
+const DRIVER_POS = [52.519, 13.412]
 const OVERVIEW_ZOOM = 12
 const ZONE_ZOOM = 14
 
@@ -39,7 +40,12 @@ const DEMAND_BARS = [
   80, 90, 95, 86, 74, 67, 60, 62, 66, 74, 84, 90,
   96, 98, 92, 82, 70, 58, 46, 36, 28, 20, 14, 9,
 ]
+// After Preferences: local +€3 surge is gone — flatten peaks into a medium band.
+const MEDIUM_DEMAND_BARS = DEMAND_BARS.map((v) => Math.round(Math.min(58, v * 0.58 + 8)))
 const NOW_IDX = 21
+
+// Cluster / individual zones that cover the driver's current location.
+const DRIVER_AREA_ZONE_IDS = new Set(['mitte', 'mitte-w', 'mitte-e', 'alex'])
 
 // ─── Geography helper ─────────────────────────────────────────────
 // Approximate hexagon in lat/lng at ~52°N (cos factor ≈ 0.607 → aspect 1.65)
@@ -372,19 +378,22 @@ function AirportChart() {
   )
 }
 
-function DefaultSheet({ onOppsOpen, chartRef }) {
+function DefaultSheet({ onOppsOpen, chartRef, preferencesVisited }) {
+  const title = preferencesVisited ? 'Medium demand in your area' : 'Earn +3€ per offer'
+  const bars = preferencesVisited ? MEDIUM_DEMAND_BARS : DEMAND_BARS
+
   return (
     <div style={{ padding: '20px 20px 24px' }}>
 
       {/* Demand */}
       <p style={{ ...FF, fontSize: 32, fontWeight: 400, color: '#191f1c', letterSpacing: '-0.704px', lineHeight: 1.15, marginBottom: 4 }}>
-        Demand is moderate
+        {title}
       </p>
       <p style={{ ...FF, fontSize: 14, fontWeight: 600, color: '#808c9f', letterSpacing: '-0.084px', marginBottom: 12 }}>
         Peak ends in 2 hours 12 min.
       </p>
       <div ref={chartRef} style={{ background: 'rgba(0,45,30,0.07)', borderRadius: 12, padding: '12px 14px 10px', marginBottom: 20 }}>
-        <DemandChart highlightStart={null} highlightEnd={null} highlightColor={null} />
+        <DemandChart bars={bars} highlightStart={null} highlightEnd={null} highlightColor={null} />
       </div>
 
       {/* Opportunities header */}
@@ -851,7 +860,7 @@ const CHART_BOTTOM_GAP = 12
 // Never let the collapsed sheet swallow the map entirely on very short screens.
 const MIN_COLLAPSED_TOP = 160
 
-export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, isHubOpen, hasTasks, hubBadge = 2 }) {
+export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, isHubOpen, hasTasks, hubBadge = 2, preferencesVisited = false }) {
   const [selectedZone, setSelectedZone] = useState(null)
   const [earningsOpen, setEarningsOpen] = useState(false)
   const [oppsOpen, setOppsOpen] = useState(false)
@@ -1147,8 +1156,14 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
             const dayBars = DEMAND_BY_DAY[oppsDay]
             const maxDayBar = Math.max(...dayBars)
             const normalizedDemand = oppsOpen ? dayBars[oppsBarIdx] / maxDayBar : 0
+            const clusterZones = preferencesVisited
+              ? CLUSTER_ZONES.filter((zone) => !DRIVER_AREA_ZONE_IDS.has(zone.id))
+              : CLUSTER_ZONES
+            const individualZones = preferencesVisited
+              ? INDIVIDUAL_ZONES.filter((zone) => !DRIVER_AREA_ZONE_IDS.has(zone.id))
+              : INDIVIDUAL_ZONES
             return oppsOpen ? (
-              INDIVIDUAL_ZONES.map(zone => (
+              individualZones.map(zone => (
                 <AnimatedSurgeLayer
                   key={zone.id}
                   zone={zone}
@@ -1161,7 +1176,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
               ))
             ) : (
               <>
-                {CLUSTER_ZONES.map(zone => (
+                {clusterZones.map(zone => (
                   <AnimatedSurgeLayer
                     key={zone.id}
                     zone={zone}
@@ -1171,7 +1186,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
                     small={false}
                   />
                 ))}
-                {INDIVIDUAL_ZONES.map(zone => (
+                {individualZones.map(zone => (
                   <AnimatedSurgeLayer
                     key={zone.id}
                     zone={zone}
@@ -1184,7 +1199,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
               </>
             )
           })()}
-          <Marker position={[52.519, 13.412]} icon={makeCarIcon()} />
+          <Marker position={DRIVER_POS} icon={makeCarIcon()} />
         </MapContainer>
       </div>
 
@@ -1296,7 +1311,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
         >
           {selectedZone
             ? <ZoneSheet zone={selectedZone} onClose={handleDeselect} chartRef={chartRef} />
-            : <DefaultSheet onOppsOpen={openOpps} chartRef={chartRef} />
+            : <DefaultSheet onOppsOpen={openOpps} chartRef={chartRef} preferencesVisited={preferencesVisited} />
           }
         </div>
       </div>
