@@ -3,7 +3,7 @@ import { setTimeout as sleep } from 'node:timers/promises'
 import { writeFile } from 'node:fs/promises'
 import http from 'node:http'
 
-const BASE = process.argv[2] ?? 'http://localhost:5174/'
+const BASE = process.argv[2] ?? 'http://localhost:5174/UK'
 const PORT = 9248
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
@@ -71,7 +71,7 @@ await evaluate(`
   (() => {
     const i = document.querySelector('input[type=password]');
     if (!i) return;
-    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(i, 'driver-ai');
+    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(i, 'bolt2026');
     i.dispatchEvent(new Event('input', { bubbles: true }));
     document.querySelector('button[type=submit]').click();
   })()
@@ -85,8 +85,12 @@ await evaluate(`(() => {
 })()`)
 await sleep(1200)
 
+// Day chips read as calendar dates, e.g. "Aug 3".
+const DAY_CHIP = `Array.from(document.querySelectorAll('button')).find((b) =>
+  /^[A-Z][a-z]{2} \\d{1,2}$/.test(b.textContent.trim()))`
+
 const PROBE = `(() => {
-  const mon = Array.from(document.querySelectorAll('button')).find((b) => b.textContent.trim() === 'Mon')
+  const mon = ${DAY_CHIP}
   if (!mon) return { error: 'no day strip' }
   const bar = mon.parentElement.parentElement
   const sheet = Array.from(document.querySelectorAll('div')).find(
@@ -96,8 +100,8 @@ const PROBE = `(() => {
     while (n) { const s = getComputedStyle(n); if (s.overflowY === 'auto' || s.overflowY === 'hidden') return n; n = n.parentElement }
     return null
   })()
-  const fabRow = Array.from(document.querySelectorAll('div')).find(
-    (d) => d.style && d.style.zIndex === '10' && d.style.gap === '59px')
+  const fabs = Array.from(document.querySelectorAll('.fab'))
+  const fabRow = fabs.length ? fabs[0].parentElement : null
   const sr = document.querySelector('.screen').getBoundingClientRect()
   return {
     position: getComputedStyle(bar).position,
@@ -113,7 +117,7 @@ const before = await evaluate(PROBE)
 console.log('before scroll:', JSON.stringify(before))
 
 await evaluate(`(() => {
-  const mon = Array.from(document.querySelectorAll('button')).find((b) => b.textContent.trim() === 'Mon')
+  const mon = ${DAY_CHIP}
   let n = mon
   while (n) { const s = getComputedStyle(n); if (s.overflowY === 'auto') { n.scrollTop = 400; return } ; n = n.parentElement }
 })()`)

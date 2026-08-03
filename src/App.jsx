@@ -26,8 +26,10 @@ const SCREENS = {
 
 const DARK_SCREENS = new Set(['navigation'])
 
-const SIDEBAR_ORIGIN = '56px 68px'
-const HUB_ORIGIN = '335px 68px'
+// Centres of the top FAB row (16px inset, 48px buttons) so each screen grows
+// out of the button that opened it.
+const SIDEBAR_ORIGIN = '40px 40px'
+const HUB_ORIGIN = 'calc(100% - 40px) 40px'
 
 /**
  * The device frame and dev sidebar are authoring tools, so they need a mouse as

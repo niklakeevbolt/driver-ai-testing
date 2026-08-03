@@ -728,8 +728,10 @@ const EXPANDED_TOP = 450
 const COLLAPSED_TOP = 628
 // Sticky area: 20px padding + 72px buttons + 20px padding.
 const FOOTER_H = 112
-// FAB row: top 44, height 48 → bottom 92. Content stops 24px below that.
-const CONTENT_STOP = 75
+// Top FAB row sits 16px from the top and side edges of the screen.
+const FAB_INSET = 16
+// FAB row: top 16, height 48 → bottom 64. Content stops just below that.
+const CONTENT_STOP = 47
 // Breathing room under the demand chart in the collapsed state.
 const CHART_BOTTOM_GAP = 12
 // Never let the collapsed sheet swallow the map entirely on very short screens.
@@ -1097,7 +1099,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
       {/* Notification card */}
       {hasTasks && (
         <div style={{
-          position: 'absolute', top: 108, left: '50%', transform: 'translateX(-50%)',
+          position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)',
           width: 341, zIndex: 8,
           background: '#0e1010', borderRadius: 24,
           boxShadow: '0px 4px 6px rgba(0,0,0,0.2)',
@@ -1126,9 +1128,8 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
 
       {/* Header FABs */}
       <div style={{
-        position: 'absolute', top: 44, left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex', alignItems: 'center', gap: 59,
+        position: 'absolute', top: FAB_INSET, left: FAB_INSET, right: FAB_INSET,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         zIndex: 10,
       }}>
         <button ref={fabRef} className="fab fab-profile" onClick={() => navigate('sidebar')} style={{

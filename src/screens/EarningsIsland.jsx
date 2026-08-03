@@ -27,7 +27,8 @@ const PROGRESS_FILL  = '#191f1c'
 
 // geometry — horizontal inset is fixed; card width tracks the phone screen so
 // left and right margins stay equal on any device width.
-const TOP = 44
+// Matches the 16px inset of the profile/inbox FABs it sits between.
+const TOP = 16
 const CL  = 24
 const PW  = 113, PH = 48
 const PAD = 16
