@@ -42,6 +42,7 @@ import SettingsOutlinedIcon from '../vendor/kalep-icons/SettingsOutlined.js'
 import ShareIosIcon from '../vendor/kalep-icons/ShareIos.js'
 import StarIcon from '../vendor/kalep-icons/Star.js'
 import StopIcon from '../vendor/kalep-icons/Stop.js'
+import SupportIcon from '../vendor/kalep-icons/Support.js'
 import SurgeIcon from '../vendor/kalep-icons/Surge.js'
 import TimeIcon from '../vendor/kalep-icons/Time.js'
 import TimeOutlinedIcon from '../vendor/kalep-icons/TimeOutlined.js'
@@ -103,6 +104,7 @@ export const SettingsOutlined = wrapKalepIcon(SettingsOutlinedIcon)
 export const ShareIos = wrapKalepIcon(ShareIosIcon)
 export const Star = wrapKalepIcon(StarIcon)
 export const Stop = wrapKalepIcon(StopIcon)
+export const Support = wrapKalepIcon(SupportIcon)
 export const Surge = wrapKalepIcon(SurgeIcon)
 export const Time = wrapKalepIcon(TimeIcon)
 export const TimeOutlined = wrapKalepIcon(TimeOutlinedIcon)

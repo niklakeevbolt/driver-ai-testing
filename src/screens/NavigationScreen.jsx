@@ -23,13 +23,13 @@ import {
   CoffeeBreak,
   Comment,
   Edit,
-  Inbox,
   MapDestination,
   Minus,
   Plus,
   Route,
   Send,
   Stop,
+  Support,
   User,
 } from '@icons'
 import { useCountry } from '../context/CountryContext.jsx'
@@ -290,7 +290,7 @@ export default function NavigationScreen({ navigate, goBack }) {
         style={{ position: 'absolute', top: 186, left: 11, zIndex: 10 }}
         onClick={() => navigate('bolt-hub')}
       >
-        <Inbox size="lg" style={{ color: 'var(--content-primary)' }} />
+        <Support size="lg" style={{ color: 'var(--content-primary)' }} />
       </button>
 
       {/* Earnings island — centered, at top 225 (314 - 89) */}

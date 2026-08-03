@@ -7,8 +7,8 @@ import {
   ChevronRight,
   Clear,
   Filters,
-  Inbox,
   Route,
+  Support,
   Surge,
   Time,
   User,
@@ -1142,7 +1142,7 @@ export default function HomeScreen({ navigate, sidebarPhase, fabRef, hubFabRef, 
         </button>
         <div style={{ width: 113, height: 48, flexShrink: 0 }} />
         <button ref={hubFabRef} className="fab" style={{ position: 'relative', transform: earningsOpen ? 'translateX(8px)' : 'translateX(0)', opacity: isHubOpen ? 0 : 1, transition: 'opacity 0.15s, transform 0.3s cubic-bezier(0.34,1.08,0.64,1)' }} onClick={() => navigate('bolt-hub')}>
-          <Inbox size="lg" style={{ color: 'var(--content-primary)' }} aria-hidden="true" />
+          <Support size="lg" style={{ color: 'var(--content-primary)' }} aria-hidden="true" />
           <div style={{
             position: 'absolute', top: -2, right: -2,
             minWidth: 20, height: 20, borderRadius: 9600,
